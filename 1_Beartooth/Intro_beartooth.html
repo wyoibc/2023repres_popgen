@@ -12,6 +12,69 @@
     div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="avenir-white.css" />
@@ -26,17 +89,198 @@
 <p><br></p>
 <h2 id="table-of-contents">Table of Contents</h2>
 <ul>
-<li><a href="#1-overview">1. Overview</a></li>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#logging-in">Logging in</a></li>
+<li><a href="#navigating-beartooth">Navigating Beartooth</a></li>
+<li><a href="#moving-copying-and-removing-files">Moving, copying, and removing files</a></li>
+<li><a href="#where-to-store-files">Where to store files</a></li>
+<li><a href="#editing-files">Editing files</a></li>
+<li><a href="#globbing-and-some-useful-shortcuts">Globbing and some useful shortcuts</a></li>
+<li><a href="#transferring-files-to-and-from-beartooth">Transferring files to and from Beartooth</a></li>
 </ul>
 <br><br><br> <br><br><br>
 <center>
-<ul>
-<li>drop an image in here</li>
-</ul>
+<h2 id="drop-an-image-in-here">drop an image in here</h2>
 </center>
 <p><br><br><br></p>
-<h2 id="overview">1. Overview</h2>
-<p>Beartooth is the University of Wyoming’s primary high-performance computing (HPC) cluster.</p>
+<h2 id="overview">Overview</h2>
+<p>Beartooth is the University of Wyoming’s primary high-performance computing (HPC) cluster. It is essentially a bunch of computers all linked together that users can remotely access to run analyze data. If you were previously familiar with Teton, Beartooth is an updated version. Beartooth is free to use for UW researchers, and is administered and maintained by UW’s <a href="https://www.uwyo.edu/arcc/index.html">Advanced Research Computing Center (ARCC)</a>.</p>
+<p>In order to access Beartooth, users must first be added to a project. Projects are essentially accounts, and every user on Beartooth is associated with at least one project. Projects are associated with particular resources like storage and track usage of the cluster by users. In many cases, all members of a lab will share a project. Users may also be affiliated with projects that are created for specific collaborations or other purposes. We’ll talk more about some of the relevant aspects of projects in a bit.</p>
+<p>You can gain access to existing projects using <a href="https://arccwiki.atlassian.net/servicedesk/customer/portal/2/group/15/create/36">this form</a> with the approval of the project PI. If you need to create a new project, use <a href="https://arccwiki.atlassian.net/servicedesk/customer/portal/2/group/15/create/44">this form</a>.</p>
+<p>Beartooth (and nearly all other HPC systems) uses a Linux operating system. The primary way to interact with Beartooth is via the command line using bash commands. Linux is similar to the Unix-based operating system on Mac computers, and if you have used the terminal on a Mac, then the Linux terminal will be very familiar.</p>
+<p><br> <br></p>
+<p>For more information on Beartooth, you can see ARCC’s documentation <a href="https://arccwiki.atlassian.net/wiki/spaces/DOCUMENTAT/pages/1683587073/Beartooth">here</a></p>
+<p>ARCC also maintains a separate cluster, WildIris that was developed to support users outside of UW (e.g., WY community college faculty and students) and does not require UW credentials for access. Contact the INBRE Data Science Core if you are interested in this resource.</p>
+<p>This tutorial borrows info from Joe’s bash tutorial: <a href="https://github.com/Joseph7e/HCGS-BASH-tutorial">https://github.com/Joseph7e/HCGS-BASH-tutorial</a></p>
+<p><br> <br></p>
+<h2 id="logging-in">Logging in</h2>
+<p>Once you have been added to a new or existing project on Beartooth, you can log in using one of a few methods.</p>
+<h3 id="secure-shell-ssh">Secure Shell (SSH)</h3>
+<p>SSH is a method of securely communicating with another computer.</p>
+<p><img src="https://www.hostinger.com/tutorials/wp-content/uploads/sites/2/2017/07/symmetric-encryption-ssh-tutorial.jpg" /></p>
+<p>Logging into Beartooth follows the same general procedure as logging into most remote servers. If you are on a Mac or running a Linux operating system, then you can log in directly from the terminal. If you are on a Windows machine, I believe that the most recent operating systems include a terminal that can allows for <code>ssh</code> login as if one were on a Linux/Unix-based machine. If that is not the case, you will need to install an ssh client to allow you to log into and communicate with WildIris, such as <a href="https://mobaxterm.mobatek.net/download.html">MobaXterm</a> or <a href="https://www.putty.org/">PuTTY</a>.</p>
+<p>Detailed instructions for logging into Beartooth are described on ARCC’s site <a href="https://arccwiki.atlassian.net/wiki/spaces/DOCUMENTAT/pages/1074757639/Logging+Into+HPC">here</a>. We’ll assume that you’ve completed your first login and that you already have Duo authentication set up. At this point, on a Mac or Linux, you can open a terminal window, type</p>
+<p><code>ssh &lt;username&gt;@beartooth.arcc.uwyo.edu</code></p>
+<p>(where <username> should be replaced by your username on the system)</p>
+<p>Then when prompted for a password, enter your password. You will not see <code>**</code> or dots appear as you type characters but they are being typed (assuming your computer/keyboard are functioning normally). After you type your password and hit enter, you should shortly get a Duo notification, and once you authenticate, you should be logged in.</p>
+<p>This will work basically the same in MobaXterm or PuTTY, but you will put <code>&lt;username&gt;@beartooth.arcc.uwyo.edu</code> into the hostname/session window instead of entering it on the command line.</p>
+<h3 id="exiting-beartooth">Exiting Beartooth</h3>
+<p>When you are done on Beartooth, you can log out with the simple command <code>exit</code>.</p>
+<h3 id="ondemand">OnDemand</h3>
+<p>You can also access Beartooth using Southpass, ARCC’s implementation of OnDemand. This is documented <a href="https://arccwiki.atlassian.net/wiki/spaces/DOCUMENTAT/pages/1298071553/SouthPass">here</a>. We won’t use this right now, but it is an alternative that may be helpful if you are having trouble logging in otherwise. It also has cool functionality, including the ability to use RStudio with a graphical interface on Beartooth. We will explore this in a subsequent session when we start using R, and I will put the link to that tutorial here once I make it.</p>
+<p><br> <br></p>
+<h2 id="navigating-beartooth">Navigating Beartooth</h2>
+<p>As stated above Beartooth runs a Linux operating system, as do the vast majority of other HPC clusters. When using Beartooth (and other clusters) we have no graphical interface or desktop. Instead, we interact primarily via the command line (for some tools that are exceptions to this, see info about Southpass and Cyberduck below).</p>
+<p>This means that we can’t just click our way around the cluster to get where we want or see what files and programs are available. Instead, we have to learn some commands that we can use to accomplish these tasks. Commands are entered into the command line in the terminal, and generally share a common structure:</p>
+<p><img src="images/anatomy.png" /></p>
+<p>Note that your prompt will look different from mine because I have changed some options in my bash profile (we’ll get to this later), and the prompt will look different on different clusters.</p>
+<p>One of the most common commands you’ll use is</p>
+<p><code>ls</code></p>
+<p>This command lists files and directories. If you run it with no options or arguments, it will do this for the directory you are currently in.</p>
+<p><strong>Commands are case sensitive!</strong> If you type <code>LS</code> it will not be recognized as <code>ls</code>. Spaces between options/arguments are also important to delineate when a new option or argument starts. In most cases, the number of spaces is not critical, but it can be for some applications.</p>
+<p>When you first log in, you’ll be in your home directory, you can always confirm your current directory with the</p>
+<p><code>pwd</code></p>
+<p>command (for “print working directory”). This will show you the full path to where you are currently, i.e., all of the nested directories that you are inside of. You should do this often to make sure you’re working where you think you are!</p>
+<p>If you have not previously used Beartooth, then you likely won’t have any files to see when you run <code>ls</code>. We can use <code>touch</code> to create a blank text file in our current directory.</p>
+<pre><code>touch test.txt</code></pre>
+<ul>
+<li>Side note: when working in Bash, file extensions are often only used for human convenience and programs will typically not automatically add a file extension. I added <code>.txt</code> here so that I know this is a text file (albeit an empty one). We could leave the extension off or use any arbitrary extension and most programs that read text files will still read this file just fine.</li>
+</ul>
+<p>Here we have to supply an argument to <code>touch</code> to tell it what to name the file. If we run <code>ls</code>, we should now see what file listed. I personally prefer to always run <code>ls</code> with some additional options as:</p>
+<p><code>ls -ltrh</code></p>
+<p>where <code>l</code> is long form (includes date information, owner, permissions, and size), <code>tr</code> is sort by time, and in reverse (newest files at the bottom), and <code>h</code> is human readable so that file sizes are in KB, MB, GB, etc instead of always in bytes.</p>
+<p>You can move around on the cluster using <code>cd</code> followed by any path (or if you enter <code>cd</code> with no path, it will take you to your home directory). If you run</p>
+<pre><code>cd /</code></pre>
+<p>It will take you to the root directory of the server. If you run <code>ls</code> or <code>ls -ltrh</code> here, you’ll see all the directories and files that exist in that directory - you won’t have permissions to modify most of these and may not be able to even view some.</p>
+<ul>
+<li><strong>You can return to your home directory by typing <code>cd</code>, <code>cd ~</code> (the tilde is a shortcut for your home directory), or <code>cd</code> followed by the full path to your home directory.</strong> <code>~</code> can also be used in paths in other contexts like copying files, designating paths to input files for programs, etc.</li>
+</ul>
+<p>Once back in your home directory, make a new directory called “t3_2022” using the <code>mkdir</code> command to make a directory:</p>
+<pre><code>mkdir wkshp_test</code></pre>
+<p>Then navigate into it:</p>
+<pre><code>cd wkshp_test</code></pre>
+<p>Note that here we didn’t have to use the full path, only what’s called the “relative path”, meaning we tell the computer where to go relative to where we are already. If we ran that command from somewhere else, it wouldn’t work, because the computer doesn’t know where to look for <code>wkshp_test</code>. You can think of this like addresses. If we’re in Laramie and I say to go to 108 Grand Ave (Coal Creek Tap), the directions make sense relative to us being in Laramie already. If we’re in Ft. Collins, CO, that address doesn’t exist, and you need to provide the full address for anyone to be able to get there.</p>
+<p>We can navigate up one directory from wherever we are by using <code>..</code></p>
+<p><code>cd ..</code></p>
+<p>This can be chained together to move up two or more directories: <code>cd ../..</code> goes up two directories, <code>../../..</code> goes up three. This can be a bit confusing, so you may want to <code>pwd</code> when you finish to know where you are.</p>
+<p>Note that if you just want to see what’s inside some directory, you can use <code>ls</code> without moving into that directory first:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># List the contents of your home directory</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> ~</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># list contents of one directory up from where you are</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> .. </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># list the contents of the root directory</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> /</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># list the contents of the wkshp_test directory you made in your home directory</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> ~/wkshp_test</span></code></pre></div>
+<p>I think that this above is the first time that I’ve used <code>#</code> in a code block so far. In Bash, <code>#</code> denotes a comment, and anything after that character is ignored and treated as code to be evaluated. This allows you to put notes and explanations into Bash code, which is particularly useful when writing scripts.</p>
+<p><br> <br></p>
+<h2 id="moving-copying-and-removing-files">Moving, copying, and removing files</h2>
+<p>The <strong>move</strong> command - mv</p>
+<ul>
+<li>mv &lt;file&gt; &lt;destination&gt;</li>
+</ul>
+<p>The <strong>copy</strong> command - cp</p>
+<ul>
+<li>cp &lt;file&gt; &lt;destination&gt;</li>
+</ul>
+<p>The <strong>remove</strong> command - rm</p>
+<ul>
+<li>rm &lt;file&gt;</li>
+</ul>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># make a new directory</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> my_directory/</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># move a file up one directory</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> my_file.txt ../</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># move and rename a file</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> my_file.txt ../my_renamed_file.txt</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># copy a file and rename</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> my_file.txt my_renamed_file.txt</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># copy a file to a different directory without renaming</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> my_file.txt my_directory/</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co"># remove a file</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> my_renamed_file.txt</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co"># remove a directory with the -r option, recursive</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-r</span> my_directory/</span></code></pre></div>
+<p>Be <strong>VERY</strong> careful when using <code>rm</code>, and even <code>cp</code> and <code>mv</code>. There is no “undo” button on the command line in Linux and no trashcan. If you delete something with <code>rm</code>, it is <strong>gone</strong> and it will not warn you or ask you if you’re sure. Similarly, <code>cp</code> or <code>mv</code> will happily overwrite the target destination with no warning if it already exists.</p>
+<h3 id="finding-help-for-a-command">Finding help for a command</h3>
+<p>You can find helpful information about these and most other commands by typing <code>--help</code> after the command, e.g., <code>ls --help</code> will give you a whole lot of info about using <code>ls</code>. Most commands also have great documentation and tutorials that can be found with some quick googling. Many commands also have manuals you can look up using e.g., <code>man ls</code>.</p>
+<p><br> <br></p>
+<h2 id="where-to-store-files">Where to store files</h2>
+<p>You can put files in several locations on Beartooth. So far, we have just created some test files and directories in your home directory. However, most of the time, you will want to be working and placing files elsewhere on Beartooth.</p>
+<p>The first reason for this is that your home directory is relatively small. When you first log into Beartooth, you get some text that shows you how much storage you have available in various locations, including your home directory. You can always bring this back up using the command</p>
+<pre><code>arrcquota</code></pre>
+<p>By default all users have 25 GB of storage in their home directories. If you start putting many files there, it will rapidly fill. Instead, you can put files in either your personal “gscratch” or into a project directory for your project (or the relevant project directory if you are associated with multiple projects). Your “gscratch” directory is 5 TB by default, and project directories are 1 TB by default. If you need more storage you can use the “Modify Storage Quota” field in the <a href="https://arccwiki.atlassian.net/servicedesk/customer/portal/2/group/15/create/36">form to request a change to your project</a> to put in a one-time request for increased storage.</p>
+<p><code>gscratch</code> has a lot of storage but is subject to purge and can only be viewed/used by you. It is therefore a good place to put intermediate files or large data files that you personally will be actively working on for up to a few months.</p>
+<p>Files in project directories can be viewed by anyone in the project, as well as edited and executed depending on how individual file owners set permissions. This makes project directories good places to put files that others will also use or that you want others to be able to view. Project directories are also not subject to purge. This is where I tend to store files that I’m working on.</p>
+<p>You can see the paths to the project directories that you have access to from the output of the <code>arccquota</code> command.</p>
+<p>I can go to my personal <code>inbreh</code> project by using:</p>
+<pre><code>cd /project/inbreh # use your own project, you can&#39;t get into mine</code></pre>
+<p>Note that none of home, gscratch, nor project directories are backed up (should the filesystem fail, data is gone) and they should not be used to archive data or as the sole storage place for your raw data.</p>
+<p>You can see ARCC’s explanation of all of the available spaces <a href="https://arccwiki.atlassian.net/wiki/spaces/DOCUMENTAT/pages/1714913281/Beartooth+Filesystem">here</a> and their storage policy <a href="https://arccwiki.atlassian.net/wiki/spaces/DOCUMENTAT/pages/339804216/Storage+Policy">here</a>.</p>
+<p><br> <br></p>
+<h2 id="editing-files">Editing files</h2>
+<p>We have many options for viewing and editing text files. <code>nano</code> is a simple text editor that is available on WildIris and most other Linux and Unix systems. We can test it out on the “test.txt” file we made.</p>
+<pre><code>nano test.txt</code></pre>
+<p>Type some text into the file, then run <code>ctrl + x</code> to exit (as indicated at the bottom of the editor). It will ask you if you want to save, type <code>y</code> for yes, then hit <code>enter</code> to write to the same file. You could alternately type a different file here to put the modified info into a new file rather than overwriting the old - this is similar to the difference between “save” and “save as” in something like Microsoft Word.</p>
+<p>If you are using Cyberduck (described below, getting slightly ahead), you can also edit files using your favorite plain text editor on your local machine. <a href="#transferring-files-to-and-from-beartooth">We’ll go over this when we get to Cyberduck</a>. It it my preferred way to edit files.</p>
+<p>We can also view files (but not edit) using <code>less</code>, which is my preferred way of looking inside files:</p>
+<pre><code>less -S test.txt</code></pre>
+<p>I almost always use the <code>-S</code> options with <code>less</code> so that lines stay on a single line, rather than wrapping at the end of the screen.</p>
+<p>You can also view the start or end of files using <code>head</code> or <code>tail</code>. If you want to print the entirety of a file to screen, you can use <code>cat</code>, but be careful of doing this with large files. If you accidentally do this on a large file and it’s taking forever, you can interrupt the current process on the terminal by pressing <code>control + c</code>.</p>
+<p><br> <br></p>
+<h2 id="globbing-and-some-useful-shortcuts">Globbing and some useful shortcuts</h2>
+<p>Often, we want to select a bunch of files that match some pattern. This can be done with globbing using <code>*</code>. The <code>*</code> is a wildcard in bash. If we do <code>ls *.txt</code> this will list all files that start with anything and end in <code>.txt</code>. We can list (or do anything else to) all files with <code>ls *</code> - this isn’t terrible useful with <code>ls</code>, but can be more useful for things like <code>cp</code>. You can glob various parts of files:</p>
+<pre><code># list files with some pattern somewhere in the middle of the name
+#  allow any other text on either side
+ls *internal_pattern* 
+
+# list files starting with a pattern
+ls starts_with* 
+
+# list files ending with a pattern
+ls *ends with
+
+# list files with 2 patterns, 1 at the start, 2nd in the middle (order matters here)
+ls pattern1*pattern2*</code></pre>
+<p>You have probably already noticed that you can’t click around the terminal to get to the start or middle of a command that you’ve started typing. There are a few shortcuts that make it easier to move around if you’re at the end of typing some command and need to edit something towards the start before you execute it:</p>
+<ul>
+<li><code>ctrl + a</code> will take you to the start of the prompt</li>
+<li><code>ctrl + e</code> will take you to the end</li>
+<li><code>ctrl + u</code> will delete everything left of your cursor</li>
+<li><code>ctrl + k</code> will delete everything right of your cursor</li>
+<li><code>ctrl + w</code> will delete the “word” (text string without spaces) left of your cursor</li>
+</ul>
+<p><br> <br></p>
+<h2 id="transferring-files-to-and-from-beartooth">Transferring files to and from Beartooth</h2>
+<p>At some point, you will need to upload data from your local computer to Beartooth or download data/results from Beartooth onto your local computer. There are a few ways to do this. <code>rsync</code> and <code>scp</code> are both commands that allow you to transfer files over a secure connection. You can find some good scp documentation <a href="https://linuxize.com/post/how-to-use-scp-command-to-securely-transfer-files/">here</a> and rsync documentation <a href="https://www.digitalocean.com/community/tutorials/how-to-use-rsync-to-sync-local-and-remote-directories#using-rsync-to-sync-with-a-remote-system">here</a>.</p>
+<p>Alternately, you can use <a href="https://cyberduck.io/download/">Cyberduck</a>. It also used to be impossible to use <code>scp</code> pr <code>rsync</code> on Windows and so need Cyberduck or a similar program was necessary, like <a href="https://filezilla-project.org/">Filezilla</a> or <a href="https://winscp.net/eng/index.php">WinSCP</a>. I believe this has changed recently, but I am not sure.</p>
+<p>I use Cyberduck for the vast majority of my file transfers and also for most of my file editing. I typically only use <code>scp</code> or <code>rsync</code> when transferring large or many files, in which case these options offer significantly faster upload/download.</p>
+<p>When you open Cyberduck, you should see an “Open Connection button”. Click that, select “SFTP” in the dropdown box, enter <code>beartooth.arcc.uwyo.edu</code> as the server, then input your username and password. After clicking “connect”, you should get a Duo notification.</p>
+<p><img src="images/cyberduck_open_cnxn.png" /></p>
+<p>If you’ve successfully logged in, you should see a file browser that looks like what you’d see on your desktop. Here you can click around through files on Beartooth. By default, double clicking a file will download it to your local computer. You can also right click, then select “edit with” to look at a file in any program that will edit it without needing to create a separate copy on your local machine. You can also drag and drop files and directories to and from WildIris using Cyberduck like a regular file browser window on your local machine.</p>
+<p>If using Cyberduck, I strongly recommend going into “preferences” (on a Mac this is in the Cyberduck menu left of “File” up top) and in the “transfers” tab select “Use Browser Connection” in the dropdown menu for “Transfer Files”. This will prevent Cyberduck from asking for your password every time you upload or download a file.</p>
+<p><img src="images/cyberduck_browser_cnxn.png" /></p>
+<p>I also always go to the “browser” tab in “preferences” and check the box for “Double click opens file in external editor”, which does what it sounds like, so you don’t have to right click and select “edit with” like I described just above</p>
+<p><img src="images/cyberduck_edit_click.png" /></p>
+<p>This then allows me to just double click on a script, text file, etc and edit them in my preferred editor rather than using nano, vim, or similar command line editors. To set the editor, go to the “Editor” tab in “preferences” and select your favorite text editor.</p>
+<p>I use <a href="https://www.barebones.com/products/bbedit/download.html">bbedit</a> on Mac, and used to use <a href="https://notepad-plus-plus.org/downloads/">NotePad++</a> back when I had a PC. There are plenty of good text editors out there that all mostly do the same thing, these aren’t the best, just ones that I started using once and kept using. Once you have one of those (or another) installed, then in Cyberduck, you can right click and go to “edit with”, then your preferred editor to open a file on your machine. You can then edit this and save it as usual, and the changes will be saved directly back up to Beartooth.</p>
+<p><br> <br></p>
+<h2 id="shortcuts">Shortcuts</h2>
+<ul>
+<li>aliases, e.g., for ls -ltrh</li>
+<li>alias for ssh beartooth</li>
+<li>multiple logins</li>
+</ul>
 <p><br><br><br> <br><br><br></p>
 <p><a href="https://wyoibc.github.io/2023repres_popgen/">Home</a></p>
 <p><br><br><br> <br><br><br> <br><br><br> <br><br><br></p>

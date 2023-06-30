@@ -17,6 +17,8 @@ July 18, 2023
 - [Editing files](#editing-files)
 - [Globbing and some useful shortcuts](#globbing-and-some-useful-shortcuts)
 - [Transferring files to and from Beartooth](#transferring-files-to-and-from-beartooth)
+- [Searching in a file](#searching-in-a-file)
+- [Compute nodes vs. login nodes](#compute-nodes-vs.-login-nodes)
 
 
 <br><br><br>
@@ -45,6 +47,8 @@ For more information on Beartooth, you can see ARCC's documentation [here](https
 ARCC also maintains a separate cluster, WildIris that was developed to support users outside of UW (e.g., WY community college faculty and students) and does not require UW credentials for access. Contact the INBRE Data Science Core if you are interested in this resource.
 
 This tutorial borrows info from Joe's bash tutorial: [https://github.com/Joseph7e/HCGS-BASH-tutorial](https://github.com/Joseph7e/HCGS-BASH-tutorial)
+
+* Note that every topic we cover will be only an introduction, and you can dive deeper into any of these
 
 <br>
 <br>
@@ -330,21 +334,20 @@ I use Cyberduck for the vast majority of my file transfers and also for most of 
 When you open Cyberduck, you should see an "Open Connection button". Click that, select "SFTP" in the dropdown box, enter `beartooth.arcc.uwyo.edu` as the server, then input your username and password. After clicking "connect", you should get a Duo notification.
 
 
-![](images/cyberduck_open_cnxn.png)
+<img src="images/cyberduck_open_cnxn.png" width="70%"/>
 
 
 If you've successfully logged in, you should see a file browser that looks like what you'd see on your desktop. Here you can click around through files on Beartooth. By default, double clicking a file will download it to your local computer. You can also right click, then select "edit with" to look at a file in any program that will edit it without needing to create a separate copy on your local machine. You can also drag and drop files and directories to and from WildIris using Cyberduck like a regular file browser window on your local machine.
 
 If using Cyberduck, I strongly recommend going into "preferences" (on a Mac this is in the Cyberduck menu left of "File" up top) and in the "transfers" tab select "Use Browser Connection" in the dropdown menu for "Transfer Files". This will prevent Cyberduck from asking for your password every time you upload or download a file.
 
-![](images/cyberduck_browser_cnxn.png)
+<img src="images/cyberduck_browser_cnxn.png" width="70%"/>
 
 
 I also always go to the "browser" tab in "preferences" and check the box for "Double click opens file in external editor", which does what it sounds like, so you don't have to right click and select "edit with" like I described just above
 
 
-![](images/cyberduck_edit_click.png)
-
+<img src="images/cyberduck_edit_click.png" width="70%"/>
 
 
 This then allows me to just double click on a script, text file, etc and edit them in my preferred editor rather than using nano, vim, or similar command line editors. To set the editor, go to the "Editor" tab in "preferences" and select your favorite text editor.
@@ -356,8 +359,106 @@ I use [bbedit](https://www.barebones.com/products/bbedit/download.html) on Mac, 
 <br>
 <br>
 
+## Searching in a file
+
+**grep** is a tool that allows you to search through a file for a specified string. With default settings grep will print all lines from a file that contain the exact string that was searched.
+
+```bash
+
+grep "my search string" file.txt
+
+# have a zipped file?
+zgrep "my search string" file.txt.gz
+
+# count the number of lines that contain the search string.
+grep -c "my search string" file.txt
+
+# diplay the lines that don't contain the search term.
+grep -v "my search string" file.txt
+
+```
+
+I will often pipe output from some other command to `grep`. This means using the `|` (above the `return` key) to pass the output from one command to another. This is probably clearer with an example:
+
+```
+# Use the history command to see what we've typed recently:
+history
+
+# Use the pipe to pass the ouput from history to grep to search for a past command
+history | grep mkdir  # see what mkdir commands we've run with 
+
+```
+
+<br>
+<br>
 
 
+## Compute nodes vs. login nodes
+
+Beartooth is comprised of many individual computers that are all linked together, each of which is called a **node**. Different nodes may have different properties and functions, such as varying numbers of cores (individual processors within a node) and different amounts of memory, you can see an overview of the nodes on Beartooth [here](https://arccwiki.atlassian.net/wiki/spaces/DOCUMENTAT/pages/1721139201/Beartooth+Hardware+Summary+Table). 
+
+Most important for us most of the time is the distinction between **compute** and **login** nodes. There is a single login node on WildIris. As one might expect, this is the node that you land on when you log in. This node has a limited number of cores and memory, and should only be used for navigating around on the cluster, moving files around, basic text editing, etc. **Do not run computationally intensive processes on the login node**. These will fail or gum up the login node so that other users have a hard time using the cluster.
+
+Instead, anything that is actually processing and analyzing data should be run on a compute node. We'll cover how to do this with interactive sessions and by using slurm job scripts.
+
+### Interactive sessions
+
+Starting an interactive session will move you from the login node onto a compute node, and then everything you enter on the command line will be run on the compute node instead of the login node. You will still enter all of your commands directly into the command line and navigate around as you have been so far. This is done with the `salloc` command.
+
+`salloc` requires that you specify a project with the `-A` option so that usage and priority can be properly monitored. In the T3 2022 workshop, you should all be on the "wy\_t3_2022" project. If you are reading this guide from outside of this workshop, you will need to have use your own project instead. You will likely want to include additional options to specify the amounts of time, memory, and cores to allocate for your session.
+
+This will start an interactive session for 3 hours (format is DAYS-HOURS:MINUTES:SECONDS) with 10 GB of memory and 2 cores.
+
+```bash
+salloc -A wy_t3_2022 -t 0-03:00 --mem=10G --cpus-per-task=2
+```
+
+Once your session is allocated and running, you can start running commands on the command line with the resources that you requested. If you are done with your session early, you can run `exit` to leave the interactive session and get back to the login node. If you are already on the login node `exit` will terminate your connection to WildIris.
+
+### Submitting jobs
+
+Note that anything you run in an interactive session will terminate if your connection to WildIris is closed. Thus for longer tasks that you don't want to sit and stare at, you can submit a job to WildIris. This is done using a shell script to submit the job to SLURM, the program that schedules jobs on WildIris and many other clusters.
+
+Such scripts start with a header of SLURM options, including how many resources to request, etc.:
+
+
+```
+#!/bin/bash
+
+#SBATCH --job-name FQC   # give the job a name
+#SBATCH -A wy_t3_2022    # specify the account
+#SBATCH -t 0-04:00		 # how much time?
+#SBATCH --nodes=1			# how many nodes?
+#SBATCH --cpus-per-task=2	# 2 cores
+#SBATCH --mem=10G			# 10 GB memory
+#SBATCH --mail-type=ALL		# Send emails on start, fail, completion
+#SBATCH --mail-user=USERNAME@gmail.com   # specify your email
+#SBATCH -e err_fastqc_%A.err		# name error files and include job ID (%A)
+#SBATCH -o std_fastqc_%A.out		# name standard out files and include job ID (%A)
+```
+
+
+A slurm script is just a special kind of shell (bash) script, which is itself just a text file full of bash commands. As mentioned above, file extensions can be arbitrary. Most people us the extension `.sh` to designate shell scripts. I personally use `.slurm` to specifically designate shell scripts that submit slurm jobs - this makes it easy for me to differentiate these from other types of shell scripts and to easily list out my slurm job scripts using `ls *.slurm`
+
+That header is followed by the commands you wish to execute, then you submit a job using `sbatch <your_slurm_script>`.  We'll get deeper into this as we start running jobs in other tutorials, don't worry if this seems really compicated right now.
+
+### SLURM
+
+I've thrown around the term SLURM a few times here, so it's worth stopping for a second to talk about what it is and what it does. SLURM is a scheduler/workload manager for Linu clusters: [https://slurm.schedmd.com/documentation.html](https://slurm.schedmd.com/documentation.html.). What this means for us is that it manages the running of our jobs and decides how many jobs can run at once and when.
+
+This is necessary on a large, multi-user cluster because it's easy for a lot of people with access to all try to run large amounts of large jobs all at once. If everyone could do this freely, then we'd often run into cases where the cluster becomes unusable because there are too many people doing too much at once. When you request an interactive session or submit a job with `sbatch`, SLURM assesses the current load on the system and the amount of resources you've requested and then either allocates your resources and starts your session/job, or puts you in the queue until more resources are available.
+
+* Note that SLURM uses the number of cores and memory that you put in your request to decide whether to run your job. If you massively overestimate the amount of memory required, you may end up queued for a while, whereas a smaller request would've been allocated sooner. Of course the downside is that if you underestimate the required memory, your job may fail.
+
+SLURM also incorporates priority into deciding whose jobs run when. If multiple jobs are queued, it doesn't just run them in order of submission as resources become available. This is helpful because some users will submit thousands of big jobs at a time that could monopolize the cluster for days or weeks if they ran before anyone else's.
+
+
+
+
+
+
+<br>
+<br>
 
 
 

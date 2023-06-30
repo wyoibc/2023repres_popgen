@@ -97,6 +97,8 @@
 <li><a href="#editing-files">Editing files</a></li>
 <li><a href="#globbing-and-some-useful-shortcuts">Globbing and some useful shortcuts</a></li>
 <li><a href="#transferring-files-to-and-from-beartooth">Transferring files to and from Beartooth</a></li>
+<li><a href="#searching-in-a-file">Searching in a file</a></li>
+<li><a href="#compute-nodes-vs.-login-nodes">Compute nodes vs. login nodes</a></li>
 </ul>
 <br><br><br> <br><br><br>
 <center>
@@ -112,6 +114,9 @@
 <p>For more information on Beartooth, you can see ARCC’s documentation <a href="https://arccwiki.atlassian.net/wiki/spaces/DOCUMENTAT/pages/1683587073/Beartooth">here</a></p>
 <p>ARCC also maintains a separate cluster, WildIris that was developed to support users outside of UW (e.g., WY community college faculty and students) and does not require UW credentials for access. Contact the INBRE Data Science Core if you are interested in this resource.</p>
 <p>This tutorial borrows info from Joe’s bash tutorial: <a href="https://github.com/Joseph7e/HCGS-BASH-tutorial">https://github.com/Joseph7e/HCGS-BASH-tutorial</a></p>
+<ul>
+<li>Note that every topic we cover will be only an introduction, and you can dive deeper into any of these</li>
+</ul>
 <p><br> <br></p>
 <h2 id="logging-in">Logging in</h2>
 <p>Once you have been added to a new or existing project on Beartooth, you can log in using one of a few methods.</p>
@@ -266,14 +271,70 @@ ls pattern1*pattern2*</code></pre>
 <p>Alternately, you can use <a href="https://cyberduck.io/download/">Cyberduck</a>. It also used to be impossible to use <code>scp</code> pr <code>rsync</code> on Windows and so need Cyberduck or a similar program was necessary, like <a href="https://filezilla-project.org/">Filezilla</a> or <a href="https://winscp.net/eng/index.php">WinSCP</a>. I believe this has changed recently, but I am not sure.</p>
 <p>I use Cyberduck for the vast majority of my file transfers and also for most of my file editing. I typically only use <code>scp</code> or <code>rsync</code> when transferring large or many files, in which case these options offer significantly faster upload/download.</p>
 <p>When you open Cyberduck, you should see an “Open Connection button”. Click that, select “SFTP” in the dropdown box, enter <code>beartooth.arcc.uwyo.edu</code> as the server, then input your username and password. After clicking “connect”, you should get a Duo notification.</p>
-<p><img src="images/cyberduck_open_cnxn.png" /></p>
+<p><img src="images/cyberduck_open_cnxn.png" width="70%"/></p>
 <p>If you’ve successfully logged in, you should see a file browser that looks like what you’d see on your desktop. Here you can click around through files on Beartooth. By default, double clicking a file will download it to your local computer. You can also right click, then select “edit with” to look at a file in any program that will edit it without needing to create a separate copy on your local machine. You can also drag and drop files and directories to and from WildIris using Cyberduck like a regular file browser window on your local machine.</p>
 <p>If using Cyberduck, I strongly recommend going into “preferences” (on a Mac this is in the Cyberduck menu left of “File” up top) and in the “transfers” tab select “Use Browser Connection” in the dropdown menu for “Transfer Files”. This will prevent Cyberduck from asking for your password every time you upload or download a file.</p>
-<p><img src="images/cyberduck_browser_cnxn.png" /></p>
+<p><img src="images/cyberduck_browser_cnxn.png" width="70%"/></p>
 <p>I also always go to the “browser” tab in “preferences” and check the box for “Double click opens file in external editor”, which does what it sounds like, so you don’t have to right click and select “edit with” like I described just above</p>
-<p><img src="images/cyberduck_edit_click.png" /></p>
+<p><img src="images/cyberduck_edit_click.png" width="70%"/></p>
 <p>This then allows me to just double click on a script, text file, etc and edit them in my preferred editor rather than using nano, vim, or similar command line editors. To set the editor, go to the “Editor” tab in “preferences” and select your favorite text editor.</p>
 <p>I use <a href="https://www.barebones.com/products/bbedit/download.html">bbedit</a> on Mac, and used to use <a href="https://notepad-plus-plus.org/downloads/">NotePad++</a> back when I had a PC. There are plenty of good text editors out there that all mostly do the same thing, these aren’t the best, just ones that I started using once and kept using. Once you have one of those (or another) installed, then in Cyberduck, you can right click and go to “edit with”, then your preferred editor to open a file on your machine. You can then edit this and save it as usual, and the changes will be saved directly back up to Beartooth.</p>
+<p><br> <br></p>
+<h2 id="searching-in-a-file">Searching in a file</h2>
+<p><strong>grep</strong> is a tool that allows you to search through a file for a specified string. With default settings grep will print all lines from a file that contain the exact string that was searched.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">&quot;my search string&quot;</span> file.txt</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># have a zipped file?</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">zgrep</span> <span class="st">&quot;my search string&quot;</span> file.txt.gz</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># count the number of lines that contain the search string.</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-c</span> <span class="st">&quot;my search string&quot;</span> file.txt</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co"># diplay the lines that don&#39;t contain the search term.</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-v</span> <span class="st">&quot;my search string&quot;</span> file.txt</span></code></pre></div>
+<p>I will often pipe output from some other command to <code>grep</code>. This means using the <code>|</code> (above the <code>return</code> key) to pass the output from one command to another. This is probably clearer with an example:</p>
+<pre><code># Use the history command to see what we&#39;ve typed recently:
+history
+
+# Use the pipe to pass the ouput from history to grep to search for a past command
+history | grep mkdir  # see what mkdir commands we&#39;ve run with 
+</code></pre>
+<p><br> <br></p>
+<h2 id="compute-nodes-vs.-login-nodes">Compute nodes vs. login nodes</h2>
+<p>Beartooth is comprised of many individual computers that are all linked together, each of which is called a <strong>node</strong>. Different nodes may have different properties and functions, such as varying numbers of cores (individual processors within a node) and different amounts of memory, you can see an overview of the nodes on Beartooth <a href="https://arccwiki.atlassian.net/wiki/spaces/DOCUMENTAT/pages/1721139201/Beartooth+Hardware+Summary+Table">here</a>.</p>
+<p>Most important for us most of the time is the distinction between <strong>compute</strong> and <strong>login</strong> nodes. There is a single login node on WildIris. As one might expect, this is the node that you land on when you log in. This node has a limited number of cores and memory, and should only be used for navigating around on the cluster, moving files around, basic text editing, etc. <strong>Do not run computationally intensive processes on the login node</strong>. These will fail or gum up the login node so that other users have a hard time using the cluster.</p>
+<p>Instead, anything that is actually processing and analyzing data should be run on a compute node. We’ll cover how to do this with interactive sessions and by using slurm job scripts.</p>
+<h3 id="interactive-sessions">Interactive sessions</h3>
+<p>Starting an interactive session will move you from the login node onto a compute node, and then everything you enter on the command line will be run on the compute node instead of the login node. You will still enter all of your commands directly into the command line and navigate around as you have been so far. This is done with the <code>salloc</code> command.</p>
+<p><code>salloc</code> requires that you specify a project with the <code>-A</code> option so that usage and priority can be properly monitored. In the T3 2022 workshop, you should all be on the “wy_t3_2022” project. If you are reading this guide from outside of this workshop, you will need to have use your own project instead. You will likely want to include additional options to specify the amounts of time, memory, and cores to allocate for your session.</p>
+<p>This will start an interactive session for 3 hours (format is DAYS-HOURS:MINUTES:SECONDS) with 10 GB of memory and 2 cores.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">salloc</span> <span class="at">-A</span> wy_t3_2022 <span class="at">-t</span> 0-03:00 <span class="at">--mem</span><span class="op">=</span>10G <span class="at">--cpus-per-task</span><span class="op">=</span>2</span></code></pre></div>
+<p>Once your session is allocated and running, you can start running commands on the command line with the resources that you requested. If you are done with your session early, you can run <code>exit</code> to leave the interactive session and get back to the login node. If you are already on the login node <code>exit</code> will terminate your connection to WildIris.</p>
+<h3 id="submitting-jobs">Submitting jobs</h3>
+<p>Note that anything you run in an interactive session will terminate if your connection to WildIris is closed. Thus for longer tasks that you don’t want to sit and stare at, you can submit a job to WildIris. This is done using a shell script to submit the job to SLURM, the program that schedules jobs on WildIris and many other clusters.</p>
+<p>Such scripts start with a header of SLURM options, including how many resources to request, etc.:</p>
+<pre><code>#!/bin/bash
+
+#SBATCH --job-name FQC   # give the job a name
+#SBATCH -A wy_t3_2022    # specify the account
+#SBATCH -t 0-04:00       # how much time?
+#SBATCH --nodes=1           # how many nodes?
+#SBATCH --cpus-per-task=2   # 2 cores
+#SBATCH --mem=10G           # 10 GB memory
+#SBATCH --mail-type=ALL     # Send emails on start, fail, completion
+#SBATCH --mail-user=USERNAME@gmail.com   # specify your email
+#SBATCH -e err_fastqc_%A.err        # name error files and include job ID (%A)
+#SBATCH -o std_fastqc_%A.out        # name standard out files and include job ID (%A)</code></pre>
+<p>A slurm script is just a special kind of shell (bash) script, which is itself just a text file full of bash commands. As mentioned above, file extensions can be arbitrary. Most people us the extension <code>.sh</code> to designate shell scripts. I personally use <code>.slurm</code> to specifically designate shell scripts that submit slurm jobs - this makes it easy for me to differentiate these from other types of shell scripts and to easily list out my slurm job scripts using <code>ls *.slurm</code></p>
+<p>That header is followed by the commands you wish to execute, then you submit a job using <code>sbatch &lt;your_slurm_script&gt;</code>. We’ll get deeper into this as we start running jobs in other tutorials, don’t worry if this seems really compicated right now.</p>
+<h3 id="slurm">SLURM</h3>
+<p>I’ve thrown around the term SLURM a few times here, so it’s worth stopping for a second to talk about what it is and what it does. SLURM is a scheduler/workload manager for Linu clusters: <a href="https://slurm.schedmd.com/documentation.html.">https://slurm.schedmd.com/documentation.html</a>. What this means for us is that it manages the running of our jobs and decides how many jobs can run at once and when.</p>
+<p>This is necessary on a large, multi-user cluster because it’s easy for a lot of people with access to all try to run large amounts of large jobs all at once. If everyone could do this freely, then we’d often run into cases where the cluster becomes unusable because there are too many people doing too much at once. When you request an interactive session or submit a job with <code>sbatch</code>, SLURM assesses the current load on the system and the amount of resources you’ve requested and then either allocates your resources and starts your session/job, or puts you in the queue until more resources are available.</p>
+<ul>
+<li>Note that SLURM uses the number of cores and memory that you put in your request to decide whether to run your job. If you massively overestimate the amount of memory required, you may end up queued for a while, whereas a smaller request would’ve been allocated sooner. Of course the downside is that if you underestimate the required memory, your job may fail.</li>
+</ul>
+<p>SLURM also incorporates priority into deciding whose jobs run when. If multiple jobs are queued, it doesn’t just run them in order of submission as resources become available. This is helpful because some users will submit thousands of big jobs at a time that could monopolize the cluster for days or weeks if they ran before anyone else’s.</p>
 <p><br> <br></p>
 <h2 id="shortcuts">Shortcuts</h2>
 <ul>

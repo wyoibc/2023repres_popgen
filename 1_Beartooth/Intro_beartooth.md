@@ -22,9 +22,11 @@ July 18, 2023
 
 
 <br><br><br>
-<br><br><br>
 <center>
-## drop an image in here
+
+<a title="James St. John, CC BY 2.0 &lt;https://creativecommons.org/licenses/by/2.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Beartooth_Mountains_(Montana-Wyoming_border_area,_USA)_3.jpg"><img width="825" alt="Beartooth Mountains (Montana-Wyoming border area, USA) 3" src="images/beartooth_mtns.png"></a>
+
+
 </center>
 <br><br><br>
 
@@ -415,6 +417,8 @@ salloc -A wy_t3_2022 -t 0-03:00 --mem=10G --cpus-per-task=2
 
 Once your session is allocated and running, you can start running commands on the command line with the resources that you requested. If you are done with your session early, you can run `exit` to leave the interactive session and get back to the login node. If you are already on the login node `exit` will terminate your connection to WildIris.
 
+<br>
+
 ### Submitting jobs
 
 Note that anything you run in an interactive session will terminate if your connection to WildIris is closed. Thus for longer tasks that you don't want to sit and stare at, you can submit a job to WildIris. This is done using a shell script to submit the job to SLURM, the program that schedules jobs on WildIris and many other clusters.
@@ -441,6 +445,8 @@ Such scripts start with a header of SLURM options, including how many resources 
 A slurm script is just a special kind of shell (bash) script, which is itself just a text file full of bash commands. As mentioned above, file extensions can be arbitrary. Most people us the extension `.sh` to designate shell scripts. I personally use `.slurm` to specifically designate shell scripts that submit slurm jobs - this makes it easy for me to differentiate these from other types of shell scripts and to easily list out my slurm job scripts using `ls *.slurm`
 
 That header is followed by the commands you wish to execute, then you submit a job using `sbatch <your_slurm_script>`.  We'll get deeper into this as we start running jobs in other tutorials, don't worry if this seems really compicated right now.
+
+<br>
 
 ### SLURM
 

@@ -100,9 +100,9 @@
 <li><a href="#searching-in-a-file">Searching in a file</a></li>
 <li><a href="#compute-nodes-vs.-login-nodes">Compute nodes vs. login nodes</a></li>
 </ul>
-<br><br><br> <br><br><br>
+<br><br><br>
 <center>
-<h2 id="drop-an-image-in-here">drop an image in here</h2>
+<p><a title="James St. John, CC BY 2.0 &lt;https://creativecommons.org/licenses/by/2.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Beartooth_Mountains_(Montana-Wyoming_border_area,_USA)_3.jpg"><img width="825" alt="Beartooth Mountains (Montana-Wyoming border area, USA) 3" src="images/beartooth_mtns.png"></a></p>
 </center>
 <p><br><br><br></p>
 <h2 id="overview">Overview</h2>
@@ -311,6 +311,7 @@ history | grep mkdir  # see what mkdir commands we&#39;ve run with
 <p>This will start an interactive session for 3 hours (format is DAYS-HOURS:MINUTES:SECONDS) with 10 GB of memory and 2 cores.</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">salloc</span> <span class="at">-A</span> wy_t3_2022 <span class="at">-t</span> 0-03:00 <span class="at">--mem</span><span class="op">=</span>10G <span class="at">--cpus-per-task</span><span class="op">=</span>2</span></code></pre></div>
 <p>Once your session is allocated and running, you can start running commands on the command line with the resources that you requested. If you are done with your session early, you can run <code>exit</code> to leave the interactive session and get back to the login node. If you are already on the login node <code>exit</code> will terminate your connection to WildIris.</p>
+<p><br></p>
 <h3 id="submitting-jobs">Submitting jobs</h3>
 <p>Note that anything you run in an interactive session will terminate if your connection to WildIris is closed. Thus for longer tasks that you don’t want to sit and stare at, you can submit a job to WildIris. This is done using a shell script to submit the job to SLURM, the program that schedules jobs on WildIris and many other clusters.</p>
 <p>Such scripts start with a header of SLURM options, including how many resources to request, etc.:</p>
@@ -328,6 +329,7 @@ history | grep mkdir  # see what mkdir commands we&#39;ve run with
 #SBATCH -o std_fastqc_%A.out        # name standard out files and include job ID (%A)</code></pre>
 <p>A slurm script is just a special kind of shell (bash) script, which is itself just a text file full of bash commands. As mentioned above, file extensions can be arbitrary. Most people us the extension <code>.sh</code> to designate shell scripts. I personally use <code>.slurm</code> to specifically designate shell scripts that submit slurm jobs - this makes it easy for me to differentiate these from other types of shell scripts and to easily list out my slurm job scripts using <code>ls *.slurm</code></p>
 <p>That header is followed by the commands you wish to execute, then you submit a job using <code>sbatch &lt;your_slurm_script&gt;</code>. We’ll get deeper into this as we start running jobs in other tutorials, don’t worry if this seems really compicated right now.</p>
+<p><br></p>
 <h3 id="slurm">SLURM</h3>
 <p>I’ve thrown around the term SLURM a few times here, so it’s worth stopping for a second to talk about what it is and what it does. SLURM is a scheduler/workload manager for Linu clusters: <a href="https://slurm.schedmd.com/documentation.html.">https://slurm.schedmd.com/documentation.html</a>. What this means for us is that it manages the running of our jobs and decides how many jobs can run at once and when.</p>
 <p>This is necessary on a large, multi-user cluster because it’s easy for a lot of people with access to all try to run large amounts of large jobs all at once. If everyone could do this freely, then we’d often run into cases where the cluster becomes unusable because there are too many people doing too much at once. When you request an interactive session or submit a job with <code>sbatch</code>, SLURM assesses the current load on the system and the amount of resources you’ve requested and then either allocates your resources and starts your session/job, or puts you in the queue until more resources are available.</p>

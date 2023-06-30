@@ -54,7 +54,7 @@ If you are unable to figure out how to log in or run into issues, let me know as
 <br>
 
 
-Github repo: [https://github.com/wyoibc/2023repres_popgen](https://github.com/wyoibc/2023repres_popgen)
+This Github repo: [https://github.com/wyoibc/2023repres_popgen](https://github.com/wyoibc/2023repres_popgen)
 
 <br><br><br><br>
 <br><br><br><br>

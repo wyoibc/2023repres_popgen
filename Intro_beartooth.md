@@ -68,12 +68,10 @@ Once you have been added to a new or existing project on Beartooth, you can log 
 ### Secure Shell (SSH)
 SSH is a method of securely communicating with another computer.
 
-![](https://www.hostinger.com/tutorials/wp-content/uploads/sites/2/2017/07/symmetric-encryption-ssh-tutorial.jpg)
-
 <img src="https://www.hostinger.com/tutorials/wp-content/uploads/sites/2/2017/07/symmetric-encryption-ssh-tutorial.jpg" width="70%"/>
 
 
-Logging into Beartooth follows the same general procedure as logging into most remote servers. If you are on a Mac or running a Linux operating system, then you can log in directly from the terminal. If you are on a Windows machine, I believe that the most recent operating systems include a terminal that can allows for `ssh` login as if one were on a Linux/Unix-based machine. If that is not the case, you will need to install an ssh client to allow you to log into and communicate with WildIris, such as [MobaXterm ](https://mobaxterm.mobatek.net/download.html) or [PuTTY](https://www.putty.org/).
+Logging into Beartooth follows the same general procedure as logging into most remote servers. If you are on a Mac or running a Linux operating system, then you can log in directly from the terminal. If you are on a Windows machine, I believe that the most recent operating systems include a terminal that can allows for `ssh` login as if one were on a Linux/Unix-based machine. If that is not the case, you will need to install an ssh client to allow you to log into and communicate with Beartooth, such as [MobaXterm ](https://mobaxterm.mobatek.net/download.html) or [PuTTY](https://www.putty.org/).
 
 
 Detailed instructions for logging into Beartooth are described on ARCC's site [here](https://arccwiki.atlassian.net/wiki/spaces/DOCUMENTAT/pages/1074757639/Logging+Into+HPC). We'll assume that you've completed your first login and that you already have Duo authentication set up. At this point, on a Mac or Linux, you can open a terminal window, type 
@@ -275,7 +273,7 @@ You can see ARCC's explanation of all of the available spaces [here](https://arc
 
 ## Editing files
 
-We have many options for viewing and editing text files. `nano` is a simple text editor that is available on WildIris and most other Linux and Unix systems. We can test it out on the "test.txt" file we made.
+We have many options for viewing and editing text files. `nano` is a simple text editor that is available on Beartooth and most other Linux and Unix systems. We can test it out on the "test.txt" file we made.
 
 ```
 nano test.txt
@@ -346,7 +344,7 @@ When you open Cyberduck, you should see an "Open Connection button". Click that,
 <img src="images/cyberduck_open_cnxn.png" width="70%"/>
 
 
-If you've successfully logged in, you should see a file browser that looks like what you'd see on your desktop. Here you can click around through files on Beartooth. By default, double clicking a file will download it to your local computer. You can also right click, then select "edit with" to look at a file in any program that will edit it without needing to create a separate copy on your local machine. You can also drag and drop files and directories to and from WildIris using Cyberduck like a regular file browser window on your local machine.
+If you've successfully logged in, you should see a file browser that looks like what you'd see on your desktop. Here you can click around through files on Beartooth. By default, double clicking a file will download it to your local computer. You can also right click, then select "edit with" to look at a file in any program that will edit it without needing to create a separate copy on your local machine. You can also drag and drop files and directories to and from Beartooth using Cyberduck like a regular file browser window on your local machine.
 
 If using Cyberduck, I strongly recommend going into "preferences" (on a Mac this is in the Cyberduck menu left of "File" up top) and in the "transfers" tab select "Use Browser Connection" in the dropdown menu for "Transfer Files". This will prevent Cyberduck from asking for your password every time you upload or download a file.
 
@@ -406,7 +404,7 @@ history | grep mkdir  # see what mkdir commands we've run with
 
 Beartooth is comprised of many individual computers that are all linked together, each of which is called a **node**. Different nodes may have different properties and functions, such as varying numbers of cores (individual processors within a node) and different amounts of memory, you can see an overview of the nodes on Beartooth [here](https://arccwiki.atlassian.net/wiki/spaces/DOCUMENTAT/pages/1721139201/Beartooth+Hardware+Summary+Table). 
 
-Most important for us most of the time is the distinction between **compute** and **login** nodes. There is a single login node on WildIris. As one might expect, this is the node that you land on when you log in. This node has a limited number of cores and memory, and should only be used for navigating around on the cluster, moving files around, basic text editing, etc. **Do not run computationally intensive processes on the login node**. These will fail or gum up the login node so that other users have a hard time using the cluster.
+Most important for us most of the time is the distinction between **compute** and **login** nodes. As one might expect, login nodes are the nodes that you land on when you log in. These nodes have a limited number of cores and memory, and should only be used for navigating around on the cluster, moving files around, basic text editing, etc. **Do not run computationally intensive processes on the login nodes**. These will fail or gum up the login node so that other users have a hard time using the cluster.
 
 Instead, anything that is actually processing and analyzing data should be run on a compute node. We'll cover how to do this with interactive sessions and by using slurm job scripts.
 
@@ -414,21 +412,21 @@ Instead, anything that is actually processing and analyzing data should be run o
 
 Starting an interactive session will move you from the login node onto a compute node, and then everything you enter on the command line will be run on the compute node instead of the login node. You will still enter all of your commands directly into the command line and navigate around as you have been so far. This is done with the `salloc` command.
 
-`salloc` requires that you specify a project with the `-A` option so that usage and priority can be properly monitored. In the T3 2022 workshop, you should all be on the "wy\_t3_2022" project. If you are reading this guide from outside of this workshop, you will need to have use your own project instead. You will likely want to include additional options to specify the amounts of time, memory, and cores to allocate for your session.
+`salloc` requires that you specify a project with the `-A` option so that usage and priority can be properly monitored. You will need to specify your own project here. You will likely want to include additional options to specify the amounts of time, memory, and cores to allocate for your session.
 
-This will start an interactive session for 3 hours (format is DAYS-HOURS:MINUTES:SECONDS) with 10 GB of memory and 2 cores.
+This will start an interactive session for 3 hours (format is DAYS-HOURS:MINUTES:SECONDS) with 10 GB of memory and 2 cores (replace `YOUR_PROJECT` with the actual name of your project):
 
 ```bash
-salloc -A wy_t3_2022 -t 0-03:00 --mem=10G --cpus-per-task=2
+salloc -A YOUR_PROJECT -t 0-03:00 --mem=10G --cpus-per-task=2
 ```
 
-Once your session is allocated and running, you can start running commands on the command line with the resources that you requested. If you are done with your session early, you can run `exit` to leave the interactive session and get back to the login node. If you are already on the login node `exit` will terminate your connection to WildIris.
+Once your session is allocated and running, you can start running commands on the command line with the resources that you requested. If you are done with your session early, you can run `exit` to leave the interactive session and get back to the login node. If you are already on the login node `exit` will terminate your connection to Beartooth.
 
 <br>
 
 ### Submitting jobs
 
-Note that anything you run in an interactive session will terminate if your connection to WildIris is closed. Thus for longer tasks that you don't want to sit and stare at, you can submit a job to WildIris. This is done using a shell script to submit the job to SLURM, the program that schedules jobs on WildIris and many other clusters.
+Note that anything you run in an interactive session will terminate if your connection to Beartooth is closed. Thus for longer tasks that you don't want to sit and stare at, you can submit a job to Beartooth. This is done using a shell script to submit the job to SLURM, the program that schedules jobs on Beartooth and many other clusters.
 
 Such scripts start with a header of SLURM options, including how many resources to request, etc.:
 
@@ -436,22 +434,32 @@ Such scripts start with a header of SLURM options, including how many resources 
 ```
 #!/bin/bash
 
-#SBATCH --job-name FQC   # give the job a name
-#SBATCH -A wy_t3_2022    # specify the account
+#SBATCH --job-name make_files   # give the job a name
+#SBATCH -A YOUR_ACCOUNT    # specify the account
 #SBATCH -t 0-04:00		 # how much time?
 #SBATCH --nodes=1			# how many nodes?
 #SBATCH --cpus-per-task=2	# 2 cores
 #SBATCH --mem=10G			# 10 GB memory
 #SBATCH --mail-type=ALL		# Send emails on start, fail, completion
-#SBATCH --mail-user=USERNAME@gmail.com   # specify your email
-#SBATCH -e err_fastqc_%A.err		# name error files and include job ID (%A)
-#SBATCH -o std_fastqc_%A.out		# name standard out files and include job ID (%A)
+#SBATCH --mail-user=USERNAME@uwyo.edu   # specify your email
+#SBATCH -e err_make_files_%A.err		# name error files and include job ID (%A)
+#SBATCH -o std_make_files_%A.out		# name standard out files and include job ID (%A)
+
+
+# Code to run below here:
+
+touch ~/test_file1.txt # create a text file in your home directory
+touch ~/test_file1.txt # create another text file in your home directory
+
 ```
 
 
-A slurm script is just a special kind of shell (bash) script, which is itself just a text file full of bash commands. As mentioned above, file extensions can be arbitrary. Most people us the extension `.sh` to designate shell scripts. I personally use `.slurm` to specifically designate shell scripts that submit slurm jobs - this makes it easy for me to differentiate these from other types of shell scripts and to easily list out my slurm job scripts using `ls *.slurm`
+A slurm script is just a special kind of shell (bash) script, which is itself just a text file full of bash commands. As mentioned above, file extensions can be arbitrary. Most people us the extension `.sh` to designate shell scripts. I personally use `.slurm` to specifically designate shell scripts that submit slurm jobs - this makes it easy for me to differentiate these from other types of shell scripts and to easily list out my slurm job scripts using `ls *.slurm`.
 
-That header is followed by the commands you wish to execute, then you submit a job using `sbatch <your_slurm_script>`.  We'll get deeper into this as we start running jobs in other tutorials, don't worry if this seems really compicated right now.
+That header is followed by the commands you wish to execute (here just two `touch` commands to create files), then you submit a job using `sbatch <your_slurm_script>`. You can any bash code into these files that you wish. We'll get deeper into this as we start running jobs in other tutorials, don't worry if this seems complicated right now.
+
+You can see an example of a slurm script that I've used to get stats for vcf files [here](#examples/get_vcf_stats_ratsNCscafs.slurm)
+
 
 <br>
 

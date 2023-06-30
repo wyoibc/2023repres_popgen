@@ -1,6 +1,5 @@
----
-title: Reproducible research & population genetics
----
+# Reproducible research & population genetics
+
 
 Workshop on reproducible research and population genetics, summer 2023.
 
@@ -17,7 +16,7 @@ Run by the INBRE Data Science Core
 
 This workshop will meet from 1-4 pm on the following dates in July 2023. Click on a date/topic to see each tutorial:
 
-- [18th: Intro to Beartooth (UW's computing cluster)](1_Beartooth/Intro_beartooth.html)
+- [18th: Intro to Beartooth (UW's computing cluster)](https://github.com/wyoibc/2023repres_popgen/blob/master/Intro_beartooth.md)
 - 20th: Intro to Git & Github for reproducible research, (possibly Markdown if time allows)
 - 25th: RADseq data processing & assembly (primarily using ipyrad)
 - 27th: Population structure, R programming
@@ -54,8 +53,6 @@ If you are unable to figure out how to log in or run into issues, let me know as
 <br>
 <br>
 
-
-Website link: [https://wyoibc.github.io/2023repres_popgen/](https://wyoibc.github.io/2023repres_popgen/)
 
 Github repo: [https://github.com/wyoibc/2023repres_popgen](https://github.com/wyoibc/2023repres_popgen)
 

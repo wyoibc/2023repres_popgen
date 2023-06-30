@@ -2,7 +2,7 @@
 
 July 18, 2023
 
-[Home](https://wyoibc.github.io/2023repres_popgen/)
+[Home](https://github.com/wyoibc/2023repres_popgen)
 
 <br>
 
@@ -481,7 +481,7 @@ SLURM also incorporates priority into deciding whose jobs run when. If multiple 
 <br><br><br>
 
 
-[Home](https://wyoibc.github.io/2023repres_popgen/)
+[Home](https://github.com/wyoibc/2023repres_popgen)
 
 <br><br><br>
 <br><br><br>

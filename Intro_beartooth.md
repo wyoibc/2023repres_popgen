@@ -19,6 +19,11 @@ July 18, 2023
 - [Transferring files to and from Beartooth](#transferring-files-to-and-from-beartooth)
 - [Searching in a file](#searching-in-a-file)
 - [Compute nodes vs. login nodes](#Compute-nodes-vs-login-nodes)
+	- [Interactive sessions](#Interactive-sessions)
+	- [Submitting jobs](#Submitting-jobs)
+	- [SLURM](#SLURM)
+- [Modules](#Modules)
+- [Job arrays](#Job-arrays)
 
 
 <br><br><br>
@@ -64,6 +69,8 @@ Once you have been added to a new or existing project on Beartooth, you can log 
 SSH is a method of securely communicating with another computer.
 
 ![](https://www.hostinger.com/tutorials/wp-content/uploads/sites/2/2017/07/symmetric-encryption-ssh-tutorial.jpg)
+
+<img src="ihttps://www.hostinger.com/tutorials/wp-content/uploads/sites/2/2017/07/symmetric-encryption-ssh-tutorial.jpg" width="70%"/>
 
 
 Logging into Beartooth follows the same general procedure as logging into most remote servers. If you are on a Mac or running a Linux operating system, then you can log in directly from the terminal. If you are on a Windows machine, I believe that the most recent operating systems include a terminal that can allows for `ssh` login as if one were on a Linux/Unix-based machine. If that is not the case, you will need to install an ssh client to allow you to log into and communicate with WildIris, such as [MobaXterm ](https://mobaxterm.mobatek.net/download.html) or [PuTTY](https://www.putty.org/).

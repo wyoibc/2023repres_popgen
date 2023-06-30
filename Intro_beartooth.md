@@ -9,7 +9,7 @@ July 18, 2023
 
 ## Table of Contents
 
-- [Overview](#overview)
+- [Overview](#Overview)
 - [Logging in](#logging-in)
 - [Navigating Beartooth](#navigating-beartooth)
 - [Moving, copying, and removing files](#moving-copying-and-removing-files)
@@ -18,7 +18,7 @@ July 18, 2023
 - [Globbing and some useful shortcuts](#globbing-and-some-useful-shortcuts)
 - [Transferring files to and from Beartooth](#transferring-files-to-and-from-beartooth)
 - [Searching in a file](#searching-in-a-file)
-- [Compute nodes vs. login nodes](#compute-nodes-vs.-login-nodes)
+- [Compute nodes vs. login nodes](#Compute-nodes-vs.-login-nodes)
 
 
 <br><br><br>

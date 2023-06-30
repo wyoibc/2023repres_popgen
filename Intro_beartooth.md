@@ -22,8 +22,14 @@ July 18, 2023
 	- [Interactive sessions](#Interactive-sessions)
 	- [Submitting jobs](#Submitting-jobs)
 	- [SLURM](#SLURM)
-- [Modules](#Modules)
+- [Loading software](#Loading-software)
+	- [Modules](#Modules)
+	- [Conda](#Conda)
 - [Job arrays](#Job-arrays)
+- [Some little tricks](#Some-little-tricks)
+	- [Multiple sessions, single login](#Multiple-sessions-single-login)
+	- [Aliases](#Aliases)
+
 
 
 <br><br><br>
@@ -458,14 +464,24 @@ A slurm script is just a special kind of shell (bash) script, which is itself ju
 
 That header is followed by the commands you wish to execute (here just two `touch` commands to create files), then you submit a job using `sbatch <your_slurm_script>`. You can any bash code into these files that you wish. We'll get deeper into this as we start running jobs in other tutorials, don't worry if this seems complicated right now.
 
-You can see an example of a slurm script that I've used to get stats for vcf files [here](#examples/get_vcf_stats_ratsNCscafs.slurm)
+You can see an example of a slurm script that I've used to get stats for vcf files [here](https://github.com/wyoibc/2023repres_popgen/blob/master/examples/get_vcf_stats_ratsNCscafs.slurm).
+
+
+To monitor the status of submitted jobs, you can use:
+
+```
+squeue -u USERNAME # put in your username or someone else's
+squeue --me # show your submitted without needing to specify your username
+squeue # see all jobs on the cluster
+```
+
 
 
 <br>
 
 ### SLURM
 
-I've thrown around the term SLURM a few times here, so it's worth stopping for a second to talk about what it is and what it does. SLURM is a scheduler/workload manager for Linu clusters: [https://slurm.schedmd.com/documentation.html](https://slurm.schedmd.com/documentation.html.). What this means for us is that it manages the running of our jobs and decides how many jobs can run at once and when.
+I've thrown around the term SLURM a few times here, so it's worth stopping for a second to talk about what it is and what it does. SLURM is a scheduler/workload manager for Linux clusters: [https://slurm.schedmd.com/documentation.html](https://slurm.schedmd.com/documentation.html.). What this means for us is that it manages the running of our jobs and decides how many jobs can run at once and when.
 
 This is necessary on a large, multi-user cluster because it's easy for a lot of people with access to all try to run large amounts of large jobs all at once. If everyone could do this freely, then we'd often run into cases where the cluster becomes unusable because there are too many people doing too much at once. When you request an interactive session or submit a job with `sbatch`, SLURM assesses the current load on the system and the amount of resources you've requested and then either allocates your resources and starts your session/job, or puts you in the queue until more resources are available.
 
@@ -473,7 +489,162 @@ This is necessary on a large, multi-user cluster because it's easy for a lot of 
 
 SLURM also incorporates priority into deciding whose jobs run when. If multiple jobs are queued, it doesn't just run them in order of submission as resources become available. This is helpful because some users will submit thousands of big jobs at a time that could monopolize the cluster for days or weeks if they ran before anyone else's.
 
+<br>
+<br>
 
+
+## Loading software
+
+### Modules
+
+Modules are pieces or collections of software that are installed on Beartooth. There are a lot of programs that are installed and available to users on Beartooth. Rather than loading up all of the software each time you log in, users load the individual programs they need as they need them. Some commands for modules:
+
+```
+#see a (non-comprehensive) list of available modules
+module avail
+# search for a specific module and see info on how to load it, here the program bwa
+module spider bwa
+# load up the bwa module with it's dependcy gcc:
+module load gcc/12.2.0 bwa/0.7.17
+# See all loaded modules:
+module list
+# Reset modules to default
+module reset
+```
+
+* Note that worker nodes do not inherit the loaded modules (or any bash variables, etc.) that are in memory before you start an interactive session or a non-interactive job. You will need to load up modules you need when starting an interactive session or in your SLURM script before the lines that use a given piece of software.
+
+If a program you want to use is not installed on Beartooth, you can put in a request to have ARCC install it as a module [here](https://arccwiki.atlassian.net/servicedesk/customer/portal/2/group/15/create/24). The same form can be used to request upgraded versions of software.
+
+
+<br>
+
+### Conda
+
+Sometimes, you may not want to wait for ARCC to install a module, or you may want to use a program that does not have wide appeal and will likely only be used by you. In such cases, you can use conda environments.  See [here](https://www.freecodecamp.org/news/why-you-need-python-environments-and-how-to-manage-them-with-conda-85f155f4353c/) for an overview of conda environments. For now, I'll just say that conda is a really powerful tool for installing specific versions of software with all the dependencies to run it into an environment that will not conflict with other installed software. 
+
+We'll demonstrate this by creating an environment, activating it, then installing [ipyrad](https://ipyrad.readthedocs.io/en/master/) into it. When you're done with an environment, you can deactivate it, then reactivate it anytime you want to use it again.
+
+
+```
+# load up the miniconda module 
+module load miniconda3/23.1.0
+
+# create a new conda environment named ipyrad
+conda create -n ipyrad
+
+# activate the environment
+conda activate ipyrad
+
+# install ipyrad
+conda install ipyrad -c conda-forge -c bioconda
+```
+
+Then we can confirm that ipyrad is successfully installed by running an ipyrad command:
+
+```
+ipyrad --help
+```
+
+You can deactivate your environment using:
+
+```
+conda deactivate
+```
+
+If you try to run ipyrad commands now, you will get an error. You will need to first activate the conda environment anytime you want to use programs installed in an environment.
+
+
+You can see what conda environments you have by running:
+
+```
+conda env list
+```
+
+
+
+<br>
+<br>
+
+## Job arrays
+
+Loops are very powerful ways to iteratively run the same task over and over: with different settings, with different inputs, with different outputs, there are many ways we can set them up ([an overview of bash loops](See [here](https://www.cyberciti.biz/faq/bash-for-loop/)). However, if we make a typical bash loop and execute it within a SLURM script, it will be executed sequentially. That is, if we're doing a task 10 times, it will do the first, then the second, then the third, etc. 
+
+SLURM offers a built in way to effectively loop jobs, where each job runs concurrently (or as many as are allowed at a time by the scheduler and your priority/resources). These are called job arrays.
+
+
+We execute a job array by adding in an extra line to the `#SBATCH` commands in the header:
+
+```
+#SBATCH --array=1-17
+```
+
+Will run 17 array jobs. In each job, there will be a bash variable called `$SLURM_ARRAY_TASK_ID` that is the number of the array that is being worked on. We can use this in simple ways to just put that number onto file names or directories. E.g., the following script will make 10 files in a new directory in your home directory, each with the array task ID in the file name:
+
+```
+#!/bin/bash
+
+#SBATCH --job-name test_array
+#SBATCH -A YOUR_PROJECT  ## EDIT TO YOUR PROJECT
+#SBATCH -t 0-04:00
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=1G
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=USERNAME@uwyo.edu
+#SBATCH -e err_testarray_%A_%a.err
+#SBATCH -o std_testarray_%A_%a.out
+#SBATCH --array=1-10
+
+cd ~
+mkdir test_array
+touch test_array/arraytest${SLURM_ARRAY_TASK_ID}.txt
+```
+
+
+Note that we added `%a` to the err and out files to include the task ID in each.
+
+We can get pretty fancy with this to find files and assign them to bash arrays to do the same thing to each file (e.g., say we want to run bwa on a whole bunch of different genomes). We won't get too deep into this, but here is an example of finding all the files we made in the last script, then copying each one to a new file. Rather than feeding these into `cp`, we could feed these or other files into any other program. 
+
+
+
+```
+#!/bin/bash
+
+#SBATCH --job-name test_array2
+#SBATCH -A YOUR_PROJECT  ## EDIT TO YOUR PROJECT
+#SBATCH -t 0-04:00
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=1G
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=USERNAME@gmail.com
+#SBATCH -e err_testarray_%A_%a.err
+#SBATCH -o std_testarray_%A_%a.out
+#SBATCH --array=1-10
+
+cd ~
+cd test_array
+
+# use a loop to assign all files starting "arraytest" into a bash array
+for x in arraytest*
+do
+	files=(${files[@]} "${x}")
+done
+
+
+# Use the SLURM_ARRAY_TASK_ID to select a single file out of the bash array
+#  I use ($SLURM_ARRAY_TASK_ID-1) because bash indexing starts at 
+#     zero and this is easier for me to keep track of.
+working_file=${files[($SLURM_ARRAY_TASK_ID-1)]}
+
+cp $working_file COPY_$working_file
+```
+
+
+This will run so fast that it's not really worth doing this way, but it's **EXTREMELY** useful if you're doing lots of repetitive tasks on genomes. I use this to run things like bwa to map dozens of genomes to a reference all at once with a single script rather then making individual scripts for each genome or running them sequentially and waiting forever. I'll even do this for relatively fast things like fastqc if I'm running it on more than a few files at a time. I basically never run anything sequentially unless running it in parallel would take me more time to figure out and code than running sequentially would.
+
+You can example of an actual slurm script I've used to map snake genomes to a reference [here](https://github.com/wyoibc/2023repres_popgen/blob/master/examples/BWA_rats.slurm).
 
 
 
@@ -482,14 +653,90 @@ SLURM also incorporates priority into deciding whose jobs run when. If multiple 
 <br>
 
 
+## Some little tricks
 
-## Shortcuts
+
+### Multiple sessions, single login
+
+Sometimes you will want to open multiple terminal windows that are logged into Beartooth at the same time. You can simplify this so that you do not have to enter your password into additional windows by adding editing your SSH configuration file. This works if you are on Linux or Mac, but I have no idea if or how this works on Windows.
+
+**While signed out of Beartooth, on your own computer**, navigate to your home directory and find the `config` file in your `.ssh` directory (this is a hidden directory). In terminal, you can use nano to edit this:
+
+```
+nano ~/.ssh/config
+```
 
 
-- aliases, e.g., for ls -ltrh
-- alias for ssh beartooth
-- multiple logins
+Add in the following lines:
 
+
+```
+Host beartooth
+Hostname beartooth.arcc.uwyo.edu
+User USERNAME    ### EDIT TO YOUR USERNAME
+Port 22
+ControlMaster auto
+ControlPath ~/.ssh/ssh-%r@%h:%p
+```
+
+The top four lines make it so that you can simply type
+
+```
+ssh beartooth
+```
+
+instead of `ssh user@beartooth.arcc.uwyo.edu`. The bottom two lines make it so that when you login to Beartooth in a new terminal window while already logged in, you do not need to enter your password again.
+
+
+
+
+<br>
+
+### Aliases
+
+Aliases are basically shortcuts for commands. If there are commands that you use commonly, but don't want to have to type or remember each time, you can assign those commands to an alias. The syntax for creating an alias is:
+
+```
+alias alias_name="command_to_run"
+```
+
+
+However, if you run this in the command line, it will only be active in your current terminal session. Instead, to always have your alias, add them to you .bashrc file, which is a script that is run when you first open terminal. For Mac & Linux users (again, no idea for Windows, sorry), your .bashrc is a hidden file in your home directory:
+
+```
+nano ~/.bashrc
+```
+
+Some lines that I like to add are:
+
+```
+# Shorten the login process to beartooth even more
+alias bt='ssh beartooth'
+
+# type just l instead of ls -ltrh
+alias l='ls -ltrh'
+
+# change my terminal prompt
+PS1='\[`[ $? = 0 ] && X=2 || X=1; tput setaf $X`\]\h\[`tput sgr0`\]:$PWD\n\$ '
+```
+
+
+On Beartooth, I add the following:
+
+
+```
+alias l='ls -ltrh'
+alias sq='squeue --me' # show my jobs
+alias sqa='squeue' # show all jobs by all users
+
+# change the terminal prompt
+PS1='\[`[ $? = 0 ] && X=2 || X=1; tput setaf $X`\]\h\[`tput sgr0`\]:$PWD\n\$ '
+```
+
+Before aliases and other code in your .bashrc becomes active, you will need to close and reopen terminal/your Beartooth connection or manually run the .bashrc file using `source ~/.bashrc`.
+
+
+In both of these, I've included the code that I use to change my terminal prompt (which is not an alias), as I vastly prefer it over the default because it shows my full current working directory at all times (no getting lost and needing to enter `pwd`) and puts the code I enter on a new line below this, always starting fully at the left.
 
 
 <br><br><br>

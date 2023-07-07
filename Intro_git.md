@@ -14,6 +14,7 @@ July 20, 2023
 
 - [Overview](#Overview)
 - [Create a Github account and repository](#Create-a-Github-account-and-repository)
+- [Configuring Github on Beartooth](#Configuring-Github-on-Beartooth)
 - [Git on Beartooth](#Git-on-Beartooth)
 
 
@@ -63,7 +64,53 @@ We can leave the rest of the options at defaults and click `Create repository`. 
 <br>
 <br>
 
+## Configuring Github on Beartooth
+
+We need to do some work to link Beartooth to your Github account.
+
+To start, you will need to make sure that you own and can access your `~/.ssh` directory, if you do not, you will need to email ARCC ([arcc-info@uwyo.edu](mailto:arcchelp@uwyo.edu)) and have them transfer ownership of that directory to you. You can check the ownership by running `ls -ld ~/.ssh`. You should see a series of letters and a number followed by your username twice if you own the directory or followed by `root` twice if the directory is owned by root. If you own the directory, you’re good to continue on.
+
+You need to start by generating an ssh key pair that will allow our computer (or Beartooth in this case) to securely interact with Github. You can read more about ssh keys [here](https://wiki.archlinux.org/title/SSH_keys), we won't get into any details about them. To create the ssh key pair, run the following:
+
+```
+ssh-keygen -t rsa
+```
+
+It will ask where you want to create the file, with a default of `.ssh/id_rsa` within your home directory. Just hit enter without entering any text and the key will be created there.
+
+Then it will ask you for a passphrase, which you can leave empty by just hitting enter both times when prompted. I’m not using a passphrase here, but you can if you want, just make sure to remember it, as you’ll be asked for it when you use the key.
+
+Now we need to go copy the public key so that we can associate it with out Github account. I use `less ~/.ssh/id_rsa.pub` to look at the key and copy it (`q` quits less). Make sure you’re copying the **public key**, ending in .pub, not the private key.
+
+On Github, in the top right click on the circle icon and go to `Settings`
+
+<img src="images/github_settings.png" width="70%"/>
+
+
+then on the left side of the page that takes you to, select `SSH and GPG keys`
+
+<img src="images/Github_ssh_key_button.png" width="70%"/>
+
+then click on `New SSH key`
+
+<img src="images/new_key.png" width="70%"/>
+
+
+Copy your public key into the `key` box and give it an informative title to differentiate it from other keys you may add from your own or other computers, then click `Add SSH key`. The key is now added to Github.
+
+
+
+
+<br>
+<br>
+
+
 ## Git on Beartooth
+
+
+
+Now that Github is set up, we'll start using Git on Beartooth. Git is already installed on Beartooth and should also come installed on Mac and Linux operating systems, but will [need to be installed on Windows](https://gitforwindows.org/) (unless this has changed recently, which is possible).
+
 
 
 

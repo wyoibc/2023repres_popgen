@@ -84,16 +84,16 @@ Now we need to go copy the public key so that we can associate it with out Githu
 
 On Github, in the top right click on the circle icon and go to `Settings`
 
-<img src="images/github_settings.png" width="70%"/>
+<img src="images/github_settings.png" width="50%"/>
 
 
 then on the left side of the page that takes you to, select `SSH and GPG keys`
 
-<img src="images/Github_ssh_key_button.png" width="70%"/>
+<img src="images/Github_ssh_key_button.png" width="50%"/>
 
 then click on `New SSH key`
 
-<img src="images/new_key.png" width="70%"/>
+<img src="images/new_key.png" width="50%"/>
 
 
 Copy your public key into the `key` box and give it an informative title to differentiate it from other keys you may add from your own or other computers, then click `Add SSH key`. The key is now added to Github.

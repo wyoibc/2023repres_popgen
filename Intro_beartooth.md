@@ -153,7 +153,7 @@ It will take you to the root directory of the server. If you run `ls` or `ls -lt
 
 * **You can return to your home directory by typing `cd`, `cd ~` (the tilde is a shortcut for your home directory), or `cd` followed by the full path to your home directory.** `~` can also be used in paths in other contexts like copying files, designating paths to input files for programs, etc.
 
-Once back in your home directory, make a new directory called "t3_2022" using the `mkdir` command to make a directory:
+Once back in your home directory, make a new directory called "wkshp_test" using the `mkdir` command to make a directory:
 
 ```
 mkdir wkshp_test
@@ -339,7 +339,7 @@ You have probably already noticed that you can't click around the terminal to ge
 At some point, you will need to upload data from your local computer to Beartooth or download data/results from Beartooth onto your local computer. There are a few ways to do this. `rsync` and `scp` are both commands that allow you to transfer files over a secure connection. You can find some good scp documentation [here]( https://linuxize.com/post/how-to-use-scp-command-to-securely-transfer-files/) and rsync documentation [here](https://www.digitalocean.com/community/tutorials/how-to-use-rsync-to-sync-local-and-remote-directories#using-rsync-to-sync-with-a-remote-system).
 
 
-Alternately, you can use [Cyberduck](https://cyberduck.io/download/). It also used to be impossible to use `scp` pr `rsync` on Windows and so need Cyberduck or a similar program was necessary, like [Filezilla](https://filezilla-project.org/) or [WinSCP](https://winscp.net/eng/index.php). I believe this has changed recently, but I am not sure.
+Alternately, you can use [Cyberduck](https://cyberduck.io/download/). It also used to be impossible to use `scp` or `rsync` on Windows and so need Cyberduck or a similar program was necessary, like [Filezilla](https://filezilla-project.org/) or [WinSCP](https://winscp.net/eng/index.php). I believe this has changed recently, but I am not sure.
 
 I use Cyberduck for the vast majority of my file transfers and also for most of my file editing. I typically only use `scp` or `rsync` when transferring large or many files, in which case these options offer significantly faster upload/download.
 
@@ -462,7 +462,7 @@ touch ~/test_file1.txt # create another text file in your home directory
 
 A slurm script is just a special kind of shell (bash) script, which is itself just a text file full of bash commands. As mentioned above, file extensions can be arbitrary. Most people us the extension `.sh` to designate shell scripts. I personally use `.slurm` to specifically designate shell scripts that submit slurm jobs - this makes it easy for me to differentiate these from other types of shell scripts and to easily list out my slurm job scripts using `ls *.slurm`.
 
-That header is followed by the commands you wish to execute (here just two `touch` commands to create files), then you submit a job using `sbatch <your_slurm_script>`. You can any bash code into these files that you wish. We'll get deeper into this as we start running jobs in other tutorials, don't worry if this seems complicated right now.
+That header is followed by the commands you wish to execute (here just two `touch` commands to create files), then you submit a job using `sbatch <your_slurm_script>`. You can put any bash code into these files that you wish. We'll get deeper into this as we start running jobs in other tutorials, don't worry if this seems complicated right now.
 
 You can see an example of a slurm script that I've used to get stats for vcf files [here](https://github.com/wyoibc/2023repres_popgen/blob/master/examples/get_vcf_stats_ratsNCscafs.slurm).
 
@@ -487,7 +487,7 @@ This is necessary on a large, multi-user cluster because it's easy for a lot of 
 
 * Note that SLURM uses the number of cores and memory that you put in your request to decide whether to run your job. If you massively overestimate the amount of memory required, you may end up queued for a while, whereas a smaller request would've been allocated sooner. Of course the downside is that if you underestimate the required memory, your job may fail.
 
-SLURM also incorporates priority into deciding whose jobs run when. If multiple jobs are queued, it doesn't just run them in order of submission as resources become available. This is helpful because some users will submit thousands of big jobs at a time that could monopolize the cluster for days or weeks if they ran before anyone else's.
+SLURM also incorporates priority into deciding whose jobs run when. If multiple jobs are queued, it doesn't just run them in order of submission as resources become available. This is helpful because some users will submit thousands of big jobs at a time that could monopolize the cluster for days or weeks if they ran before anyone else's. SLURM uses an algorithm called [FairShare](https://slurm.schedmd.com/fair_tree.html) to balance job requests and user equity.
 
 <br>
 <br>
@@ -500,8 +500,10 @@ SLURM also incorporates priority into deciding whose jobs run when. If multiple 
 Modules are pieces or collections of software that are installed on Beartooth. There are a lot of programs that are installed and available to users on Beartooth. Rather than loading up all of the software each time you log in, users load the individual programs they need as they need them. Some commands for modules:
 
 ```
-#see a (non-comprehensive) list of available modules
+# see a non-comprehensive list of available modules
 module avail
+# See a comprehensive list of available modules
+module spider 
 # search for a specific module and see info on how to load it, here the program bwa
 module spider bwa
 # load up the bwa module with it's dependcy gcc:
@@ -511,6 +513,8 @@ module list
 # Reset modules to default
 module reset
 ```
+
+More info on these and other module commands can be found [here](https://lmod.readthedocs.io/en/latest/010_user.html).
 
 * Note that worker nodes do not inherit the loaded modules (or any bash variables, etc.) that are in memory before you start an interactive session or a non-interactive job. You will need to load up modules you need when starting an interactive session or in your SLURM script before the lines that use a given piece of software.
 

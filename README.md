@@ -21,7 +21,7 @@ This workshop will meet from 1-4 pm on the following dates in July 2023. Click o
 - 25th: RADseq data processing & assembly (primarily using ipyrad)
 - 27th: Population structure, R programming
 
-#### Location TBD
+### We will meet in the Science Initiative Building (SIB) room 3001
 
 <br>
 <br>

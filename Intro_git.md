@@ -1,6 +1,5 @@
 # Introduction to Git & Github
 
-# UNDER DEVELOPMENT
 
 
 July 20, 2023
@@ -57,9 +56,9 @@ and then `New repository`. This should open a page that looks like this:
 <img src="images/github_new_repo.png" width="70%"/>
 
 
-In "Repository name" enter 2023popgen. This will obviously be the name of the repository, but will also be part of the web address to the Github page for the repository as well as the name of the directory for the git repository when you clone it to your own computer, Beartooth, or another server.
+In "Repository name" enter `2023popgen`. This will obviously be the name of the repository, but will also be part of the web address to the Github page for the repository as well as the name of the directory for the git repository when you clone it to your own computer, Beartooth, or another server.
 
-In Description, you can enter something like "Repo for 2023 Popgen workshop". This should be relatively brief, more detail about the repository and files it contains will go into the Readme file.
+In `Description`, you can enter something like "Repo for 2023 Popgen workshop". This should be relatively brief, more detail about the repository and files it contains will go into the Readme file.
 
 Below Description, you can select whether to make the repository public or private. If the repository contains files and code that you want to be made available to anyone, you should keep it public (e.g., code that accompanies a paper you've published). Private repositories are used if you have code that is proprietary or if you don't want others to know what you are working on. You can switch repositories between private and public after creation, so you can keep a repository private while working on analyses and then make it public for review and publication if you like.
 
@@ -75,9 +74,9 @@ We can leave the rest of the options at defaults and click `Create repository`. 
 
 We need to do some work to link Beartooth to your Github account.
 
-To start, you will need to make sure that you own and can access your `~/.ssh` directory, if you do not, you will need to email ARCC ([arcc-info@uwyo.edu](mailto:arcchelp@uwyo.edu)) and have them transfer ownership of that directory to you. You can check the ownership by running `ls -ld ~/.ssh`. You should see a series of letters and a number followed by your username twice if you own the directory or followed by `root` twice if the directory is owned by root. If you own the directory, you’re good to continue on.
+To start, you will need to make sure that you own and can access your `~/.ssh` directory, if you do not, you will need to email ARCC ([arcc-help@uwyo.edu.](mailto:arcc-help@uwyo.edu.)) and have them transfer ownership of that directory to you. You can check the ownership by running `ls -ld ~/.ssh`. You should see a series of letters and a number followed by your username twice if you own the directory or followed by `root` twice if the directory is owned by root. If you own the directory, you’re good to continue on.
 
-You need to start by generating an ssh key pair that will allow our computer (or Beartooth in this case) to securely interact with Github. You can read more about ssh keys [here](https://wiki.archlinux.org/title/SSH_keys), we won't get into any details about them. To create the ssh key pair, run the following:
+You need to start by generating an ssh key pair that will allow your computer (or Beartooth in this case) to securely interact with Github. You can read more about ssh keys [here](https://wiki.archlinux.org/title/SSH_keys), we won't get into any details about them. To create the ssh key pair, run the following:
 
 ```
 ssh-keygen -t rsa
@@ -85,7 +84,7 @@ ssh-keygen -t rsa
 
 It will ask where you want to create the file, with a default of `.ssh/id_rsa` within your home directory. Just hit enter without entering any text and the key will be created there.
 
-Then it will ask you for a passphrase, which you can leave empty by just hitting enter both times when prompted. I’m not using a passphrase here, but you can if you want, just make sure to remember it, as you’ll be asked for it when you use the key.
+Then it will ask you for a passphrase, which you can leave empty by just hitting enter both times when prompted. I’m not using a passphrase here, but you can if you want; just make sure to remember it, as you’ll be asked for it any time you use the key.
 
 Now we need to go copy the public key so that we can associate it with out Github account. I use `less ~/.ssh/id_rsa.pub` to look at the key and copy it (`q` quits less). Make sure you’re copying the **public key**, ending in .pub, not the private key.
 
@@ -167,7 +166,7 @@ From here, there are two ways to create a local repository that is linked to Git
 
 Since we have already created the repo on Github, the easiest way to link up that repo to Beartooth is to simply clone the repository. Go to the Github page for your `2023popgen` repository, and you should see something that looks like this, but with your username instead of mine:
 
-<img src="images/git_clone.png" width="50%"/>
+<img src="images/git_clone.png" width="80%"/>
 
 If you see `https` at the start of the web address there instead of `git@`, click the `ssh` button just to left of that.
 
@@ -205,6 +204,8 @@ git init # this makes this a git repository
 `git init` is required to turn this from a standard directory into a git repository that we can use to track changes and link to Github.
 
 Let's add a readme file (all git repos should have one), add and commit that file (we'll talk about that more in ust a bit):
+
+- Side note: Text in README.md will show up on the main page for your Github repo, and it should contain detailed descriptions of your code or instructions on where to find such descriptions.
 
 ```
 echo "# 2023popgen" >> README.md # put text into new file "README.md"
@@ -246,7 +247,7 @@ git add .
 ```
 
 
-Then you need to actually commit all of your staged changes to actually record these changes in git. You also need to include a message, which should be informative but not overly long:
+Then you need to "commit" all of your staged changes to actually record these changes in git. You also need to include a message, which should be informative but not overly long:
 
 ```
 git commit -m "add description"
@@ -260,7 +261,7 @@ git push
 
 This will push the changes to the remote repository, which we set up above.
 
-In some cases, you will want to have a local copy of your repository on multiple computers. This lets you work on the same code on multiple machines, and you can use Github to sync up changes. For example, I have copies of this workshop repository on my office desktop computer and also on my laptop so that I can make changes when I'm not just in my office.
+In some cases, you will want to have a local copy of your repository on multiple computers. This lets you work on the same code on multiple machines, and you can use Github to sync up changes. For example, I have copies of this workshop repository on my office desktop computer and also on my laptop so that I can make changes when I'm not in my office.
 
 To copy your repository to a new computer, all you need to do is follow the steps above that we used to link Beartooth to Github (ssh keys, config file) and then follow the same step to clone the repository.
 
@@ -272,7 +273,7 @@ Updating your local repository with the changes from the remote repository can b
 git pull
 ```
 
-If you forget to pull changes before making edits and locally edit a file that has already been edited on Github, you will need to reconcile any changes that are conflict. We'll talk about this briefly in the section on collaborating with Github.
+If you forget to pull changes before making edits and locally edit a file that has already been edited on Github, you will need to reconcile any changes that are in conflict. We'll talk about this briefly in the section on collaborating with Github.
 
 
 Note that you can clone any public Github repository if you like, and if the Github owner makes changes, you can update your repository using `git pull`. You will not be able to push to any Github repos that you are not an owner or collaborator on.
@@ -324,7 +325,7 @@ To view old commits, you can use `git log` (use `q` to exit) for the full info, 
 git log --oneline
 ```
 
-You can view that commit using `git checkout` followed by the index of your commit (replace ###### with the correct ID of your commit)
+You can view a commit using `git checkout` followed by the index of your commit (replace ###### with the correct ID of your commit containing the functional code)
 
 ```
 git checkout ######

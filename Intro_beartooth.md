@@ -572,7 +572,7 @@ conda env list
 
 ## Job arrays
 
-Loops are very powerful ways to iteratively run the same task over and over: with different settings, with different inputs, with different outputs, there are many ways we can set them up ([an overview of bash loops](See [here](https://www.cyberciti.biz/faq/bash-for-loop/)). However, if we make a typical bash loop and execute it within a SLURM script, it will be executed sequentially. That is, if we're doing a task 10 times, it will do the first, then the second, then the third, etc. 
+Loops are very powerful ways to iteratively run the same task over and over: with different settings, with different inputs, with different outputs, there are many ways we can set them up (for an overview of bash loops [see here](https://www.cyberciti.biz/faq/bash-for-loop/)). However, if we make a typical bash loop and execute it within a SLURM script, it will be executed sequentially. That is, if we're doing a task 10 times, it will do the first, then the second, then the third, etc. 
 
 SLURM offers a built in way to effectively loop jobs, where each job runs concurrently (or as many as are allowed at a time by the scheduler and your priority/resources). These are called job arrays.
 
@@ -580,10 +580,10 @@ SLURM offers a built in way to effectively loop jobs, where each job runs concur
 We execute a job array by adding in an extra line to the `#SBATCH` commands in the header:
 
 ```
-#SBATCH --array=1-17
+#SBATCH --array=1-10
 ```
 
-Will run 17 array jobs. In each job, there will be a bash variable called `$SLURM_ARRAY_TASK_ID` that is the number of the array that is being worked on. We can use this in simple ways to just put that number onto file names or directories. E.g., the following script will make 10 files in a new directory in your home directory, each with the array task ID in the file name:
+Will run 10 array jobs. In each job, there will be a bash variable called `$SLURM_ARRAY_TASK_ID` that is the number of the array that is being worked on. We can use this in simple ways to just put that number onto file names or directories. E.g., the following script will make 10 files in a new directory in your home directory, each with the array task ID in the file name:
 
 ```
 #!/bin/bash

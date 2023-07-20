@@ -1,0 +1,205 @@
+# RADseq data processing & assembly
+
+July 25, 2023
+
+[Home](https://github.com/wyoibc/2023repres_popgen)
+
+<br>
+
+
+## Table of Contents
+
+- [Overview](#Overview)
+- [Files and basic setup](#Files-and-basic-setup)
+- [Fastq format](#Fastq-format)
+- [Installing ipyrad](#Installing-ipyrad)
+
+
+
+<br><br><br>
+<center>
+
+<img src="images/Crotalus_ruber_42613167.jpg"/>
+
+</center>
+<br><br><br>
+
+## Overview
+
+This week, we’ll be working with empirical double digest RADseq data ([Peterson et al. 2012](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0037135)) that I (Sean Harrington) generated as part of my PhD research at San Diego State University. The data are for a species of rattlesnake, the red diamond rattlesnake (Crotalus ruber), that is distributed across the Baja California peninsula and into southern California. I was interested in identifying if there is any population structure in C ruber and inferring what population genetic and environmental forces have resulted in any existing structure. The data are single-end reads generated on an Illumina hiSeq. My analyses of these data are published in [Harrington et al. 2018](https://onlinelibrary.wiley.com/doi/full/10.1111/jbi.13114).
+
+The dataset is reasonably small and we should be able to quickly process and analyze it.
+
+We will use [ipyrad](https://ipyrad.readthedocs.io/en/master/) to process and assemble the raw data into alignments. ipyrad is a flexible python-based pipeline for taking various types of restriction-site associated data, processing them, and generated aligned datasets.
+
+iPyRad is capable of generating datasets either by mapping your raw reads to a reference genome or using a de novo assembly method that does not require a reference. We will use the de novo method today.
+
+If you need help with ipyrad outside of this workshop for specific issues, you can always post [here](https://app.gitter.im/#/room/#dereneaton_ipyrad:gitter.im). Isaac is very responsive to queries.
+
+
+<br>
+<br>
+
+
+## Files and basic setup
+
+
+Before we get started, everyone will need the following files:
+
+- all_ruber.fastq
+- barcodes_samples.txt
+- names_ruber_all.txt
+
+These are all contained on Beartooth at `/project/inbre-train/2021_popgen_wkshp/data`
+
+You'll need to copy these data over to your own directory:
+
+```
+cp -r /project/inbre-train/2023_popgen_wkshp/data <where_you_want_these_files>
+```
+
+* I recommend putting these data and the other files we will create into a new directory in your project directory or in your gscratch directory
+
+This will copy over a directory called `data`. I always recommend keeping raw data, scripts, and output all in separate places. Let's set up a directory for scripts and one for ipyrad output:
+
+
+```
+mkdir ipyrad_out
+mkdir scripts
+```
+
+
+<br>
+<br>
+
+
+## Fastq format
+
+Before we start doing anything with the data, it's worth seeing what the raw data look like. The standard format for all raw data for genomic sequences is fastq.
+
+Navigate to where your all_ruber.fastq.gz file is located, and we’ll look at the first 8 lines of the file:
+
+```
+cd <path_to_your/all_ruber.fastq.gz>
+zcat all_ruber.fastq.gz | head -n 8
+```
+
+* note that these reads are gzipped (end in .gz) you cannot directly look at them with `head` but instead need to use `zcat`, which reads gzipped files, and pipe the output to `head`. Fastqs are typically gzipped to save disk space and most genomics programs can read gzipped fastqs
+
+
+That should return:
+
+```
+@SRR6143937.sra.1 1 length=96
+TGATCGCTAANAGCAAATTGAGTCCCCTGCCCATCAGTTGATGATGTCATTGGTACTTTCTATTGTGTCAGGTCTTAACTTGCCATGTTTTTTTACTTTTATTA
++SRR6143937.sra.1 1 length=96
+IIIIIIIIFD#24AFHJJJJJJIIJJJJJJJJJJJJJIJJJJJJJJJJJJJJJGHIJJJJJJJJJHIJJJJJ@FHIHIDHIHHHFHFFFFFFDDDDDCEDDDDA
+@SRR6143937.sra.2 2 length=96
+TGATCGCTTGNAGGGGGCGCATGAAGAGCGCAGGCACAGAGCAAGGCCCCGCCCTCCCCAGGGACTCATTGTGCAGTAACCGGATTGACTTCTCATGCACGCAG
++SRR6143937.sra.2 2 length=96
+IIIIIIIIFF#22<DHIHJJJJJIJIJJJIJJJJHHHHFFFFFEECDDDDDDDDDDDDDDDDB<@BDDDEDEDDEDDD>CCDDBDDDDDDDDCDEEDDDDDDDB
+```
+
+Each read from the sequencer is represented by 4 lines: the first 4 lines are the first read, the second set of 4 lines are the second read, etc. For each read, the first line is the header, and always starts with @. This contains a sequence identifier and various information about the read, often including information about the sequencing run. The second line, after the header, is the actual DNA sequence of the read. The next line always starts with `+` and may contain either no additional text, or the sequence identifier and extra information, as in the header. Line 4 for each read, following the `+` line, indicates the quality score for each DNA base in the read. This line will be exactly the same length as the DNA sequence in the second line, with e.g., the 4th character in this line corresponding to the quality of the 4th base in the sequence, etc. You can find the meaning of each of these symbols in Illumina sequences [here](https://support.illumina.com/help/BaseSpace_OLH_009008/Content/Source/Informatics/BS/QualityScoreEncoding_swBS.htm).
+
+
+
+<br>
+<br>
+
+
+## Installing ipyrad
+
+We will use conda to install iPyRad and all of its dependencies. We went over [conda in the Intro to Beartooth session](https://github.com/wyoibc/2023repres_popgen/blob/master/Intro_beartooth.md#Conda) last week.
+The first step is to load up the Beartooth modules necessary for miniconda:
+
+```
+module load miniconda3/23.1.0
+```
+
+Create a new conda environment called ipyrad, activate the environment, and install ipyrad:
+
+```
+conda create -n ipyrad  # create the environment: we only need to do this once
+conda activate ipyrad  ### You will need to run this command every time you want to use ipyrad
+conda install ipyrad -c conda-forge -c bioconda  ## You only need to run this once
+```
+
+<br>
+<br>
+
+
+## Running iPyRad
+
+First, we need to generate a params file that contains the parameters we need to specify for ipyrad. In your `scripts` directory, run:
+
+```
+ipyrad -n ruber_denovo
+```
+
+This will create a params file with the defaults that ipyrad uses, we can modify these as we need . Whatever comes after the -n is what the assembly will be named
+
+Let’s go look at and edit that. As I stated in the [Intro to Beartooth](https://github.com/wyoibc/2023repres_popgen/blob/master/Intro_beartooth.md#transferring-files-to-and-from-beartooth), I like to use Cyberduck coupled with BBedit to edit files. If you do not have that set up, you can use `nano` or `vim` to edit the file on the command line.
+
+We’ll change a few of these parameters:
+
+- `[1]`: This is where output will do, edit this to your `ipyrad_out` directory
+
+- `[2]`: this needs to reflect the path to the `all_ruber.fastq.gz` file wherever it lives for you
+
+- `[3]`: this needs to be the path to `barcodes_samples.txt`
+
+- `[7]`: dataype should be `ddrad`
+
+- `[8]`: restriction overhang is: `TGCAGG, GATC` these are the overhangs created by the restriction enzymes for ddRAD that was used for these data. I find these to be a pain to figure out, this is documented in the [ipyrad params documentation](https://ipyrad.readthedocs.io/en/master/6-params.html)
+
+- `[27]`: change to `*`, this will generate all output formats that ipyrad is currently capable of
+
+The rest of these are at generally reasonable values, although depending on your data, you may want to modify some of these. The parameters are all [well documented here](https://ipyrad.readthedocs.io/en/master/6-params.html).
+
+
+We'll start by running steps 1-5 as an `sbatch` job. To do this, create and open a new file called `ruber_denovo_1_5_.slurm` and populate it with the following, putting your account (project) and email where appropriate:
+
+```
+#!/bin/bash
+
+#SBATCH --job-name ruber_denovo
+#SBATCH -A *****YOUR_ACCOUNT*******
+#SBATCH -t 2-00:00
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=16G
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=*****YOUR_EMAIL*********
+#SBATCH -e ruber_%A_%a.err
+#SBATCH -o ruber_%A_%a.out
+
+module load miniconda3/23.1.0
+
+## run ipyrad
+conda activate ipyrad
+ipyrad -p params-ruber_denovo.txt -s 12345 -c 8
+```
+
+Submit the job and then check that it's running:
+
+```
+sbatch ruber_denovo_1_5_.slurm
+squeue --me
+```
+
+
+This should take around 20 minutes. While that's running, we take a look at the steps, which are thoroughly [documented here](https://ipyrad.readthedocs.io/en/master/7-outline.html).
+
+
+
+<br><br><br>
+<br><br><br>
+
+
+[Home](https://github.com/wyoibc/2023repres_popgen)
+
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>

@@ -13,7 +13,9 @@ July 25, 2023
 - [Files and basic setup](#Files-and-basic-setup)
 - [Fastq format](#Fastq-format)
 - [Installing ipyrad](#Installing-ipyrad)
-
+- [Branching an assembly](#Branching-an-assembly)
+- [Examining the output](#Examining-the-output)
+- [Branch to remove low data samples](#Branch-to-remove-low-data-samples)
 
 
 <br><br><br>
@@ -157,6 +159,8 @@ We’ll change a few of these parameters:
 
 The rest of these are at generally reasonable values, although depending on your data, you may want to modify some of these. The parameters are all [well documented here](https://ipyrad.readthedocs.io/en/master/6-params.html).
 
+- For our final dataset, we'll want to set parameter `[21]` "min_sample per locus" to something higher to end up with a reasonable amount of missing data, but we'll deal with his below
+
 
 We'll start by running steps 1-5 as an `sbatch` job. To do this, create and open a new file called `ruber_denovo_1_5_.slurm` and populate it with the following, putting your account (project) and email where appropriate:
 
@@ -189,7 +193,164 @@ squeue --me
 ```
 
 
-This should take around 20 minutes. While that's running, we take a look at the steps, which are thoroughly [documented here](https://ipyrad.readthedocs.io/en/master/7-outline.html).
+This should take around 20 minutes. While that's running, we can take a look at the steps, which are thoroughly [documented here](https://ipyrad.readthedocs.io/en/master/7-outline.html).
+
+
+<br>
+<br>
+
+
+## Branching an assembly
+
+We only ran steps 1-5 above because the Fastq file that we started with includes mostly individuals of the red diamond rattlesnake, *Crotalus ruber*, but also a few outgroup taxa. Right now, we want to make a dataset that includes only *C. ruber* individuals that we can run some popgen analyses on in the next session.
+
+iPyRad includes functionality to make new “branches” of the assembly using different parameters and/or including/excluding different individuals, and we’ll take advantage of that functionality here.
+
+- If we wanted to include all samples in the same dataset, we could've just run all 7 steps at once.
+
+To create a new branch with only the desired individuals (edit the two `YOUR_PATH_TO` occurrences to your own paths):
+
+```
+# if your ipyrad conda environment is not already active, load conda and activate it
+module load miniconda3/23.1.0
+conda activate ipyrad
+
+# if you are not already in your "scripts" directory, go there
+cd YOUR_PATH_TO/scripts
+
+# branch the assembly
+ipyrad -p params-ruber_denovo.txt -b ruber_only_denovo ../data/names_ruber_all.txt
+```
+
+- note that `../data/names_ruber_all.txt` will work if you have set up yoru directories as I have, with `scripts` and `data` directories both in the same parent directory. If not, you will need to specify the path to `names_ruber_all.txt`
+
+This will use our old assembly and params file to generate a new branch, with params file `params-ruber_only_denovo.txt` that includes only samples in the `names_ruber_all.txt` file.
+
+
+We need to further edit this file to change parameter `[21]` “min_sample per locus”. The parameter defines how many how many individual samples a locus must have data for to include that locus in the final dataset. It controls the amount of missing data in the final dataset. Here, let's set this to `26` - this is about 75% of individuals and should result in a matrix that is ~75% or greater complete.
+
+Use your favorite text editor and make this change in the file `params-ruber_only_denovo.txt`:
+
+```
+26               ## [21] [min_samples_locus]: Min # samples per locus for output
+```
+
+
+Once that change has been made, run the final 2 steps in ipyrad. This is fast on this dataset, but we'll submit it as a job, both for practice running sbatch jobs and because it's good practice to keep a record of your code, which you always have if you run code via scripts that you save.
+
+Using your favorite text editor, create a file called `ruber_denovo67.slurm` with the following in your scripts directory (editing account and email):
+
+
+```
+#!/bin/bash
+
+#SBATCH --job-name ruber_denovo67
+#SBATCH -A *****YOUR_ACCOUNT*******
+#SBATCH -t 0-30:00
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=16G
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=*****YOUR_EMAIL*********
+#SBATCH -e ruber67_%A_%a.err
+#SBATCH -o ruber67_%A_%a.out
+
+module load miniconda3/23.1.0
+
+## run ipyrad
+conda activate ipyrad
+ipyrad -p params-ruber_only_denovo.txt -s 67 -c 8
+```
+
+Submit the job and then check that it's running:
+
+```
+sbatch ruber_denovo67.slurm
+squeue --me
+```
+
+
+
+## Examining the output
+
+Before you start analyzing your data, you should always take a look at the output stats.
+
+```
+cd YOUR_PATH_TO/ipyrad_out/ # EDIT TO YOUR PATH (or ../ipyrad_out if organized as I have)
+cd ruber_only_denovo_outfiles
+less -S ruber_only_denovo_stats.txt
+```
+
+- remember `q` quits `less`
+
+There should be about 2260 loci recovered in the assembly (last column of row `total_filtered_loci`). If we scroll down a bit in the table `The number of loci recovered for each Sample.`, we can see that SD_Field_0506 has almost no loci shared with other samples, and SD_Field_1453 has only about half as many loci as most samples. We’ll want to remove these samples before moving on. Note that SD_Field_0506 is an obviously failed sample, but for SD_Field_1453, you would likely want to try out some preliminary downstream analyses with and without this sample – I’ve already played with these data and decided it’s best to remove it.
+
+
+## Branch to remove low data samples
+
+Start by making a new names file to exclude SD_Field_0506 and SD_Field_1453
+
+
+```
+# Navigate to your data directory (the following works if you used my setup)
+cd ../../data/
+# copy the names file to edit
+cp names_ruber_all.txt names_ruber_reduced.txt
+```
+
+Then use your favorite text editor to delete the lines containing `SD_Field_0506` and `SD_Field_1453`.
+
+Do the branching (editing paths if you've set yours up differently than mine):
+
+```
+cd ../scripts
+ipyrad -p params-ruber_only_denovo.txt -b ruber_reduced_denovo ../data/names_ruber_reduced.txt
+```
+
+Make another slurm script to run just step 7 as a job using your favorite text editor called `ruber_denovo_reduced7.slurm`:
+
+
+```
+#!/bin/bash
+
+#SBATCH --job-name ruber_reduced7
+#SBATCH -A *****YOUR_ACCOUNT*******
+#SBATCH -t 0-10:00
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=16G
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=*****YOUR_EMAIL*********
+#SBATCH -e ruber_red7_%A_%a.err
+#SBATCH -o ruber_red7_%A_%a.out
+
+module load miniconda3/23.1.0
+
+## run ipyrad
+conda activate ipyrad
+ipyrad -p params-ruber_reduced_denovo.txt -s 7 -c 8
+```
+
+Submit and check on the job:
+
+```
+sbatch ruber_denovo_reduced7.slurm
+squeue --me
+```
+
+Go look at the stats file for the new assembly:
+
+```
+cd ../ipyrad_out/ruber_reduced_denovo_outfiles/
+less -S ruber_reduced_denovo_stats.txt
+```
+
+You should now see a slight decrease in the number of loci (I see 2212), but pretty good coverage across individuals, with no single sample having maassive amounts of missing data. This looks like a good dataset to move forward with.
+
+We have all sorts of variously formatted data files in the output directory.
+
+
+
 
 
 

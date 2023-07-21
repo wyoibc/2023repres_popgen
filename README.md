@@ -14,7 +14,7 @@ Run by the INBRE Data Science Core
 
 ## Workshop information and materials
 
-This workshop will meet from 1-4 pm on the following dates in July 2023. Click on a date/topic to see each tutorial:
+This workshop will meet from 1-4 pm on the following dates in July 2023. Click on a topic to see each tutorial:
 
 - 18th: [Intro to Beartooth (UW's computing cluster)](https://github.com/wyoibc/2023repres_popgen/blob/master/Intro_beartooth.md)
 - 20th: [Intro to Git & Github for reproducible research](https://github.com/wyoibc/2023repres_popgen/blob/master/Intro_git.md)

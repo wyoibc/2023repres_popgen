@@ -269,7 +269,8 @@ sbatch ruber_denovo67.slurm
 squeue --me
 ```
 
-
+<br>
+<br>
 
 ## Examining the output
 
@@ -285,6 +286,8 @@ less -S ruber_only_denovo_stats.txt
 
 There should be about 2260 loci recovered in the assembly (last column of row `total_filtered_loci`). If we scroll down a bit in the table `The number of loci recovered for each Sample.`, we can see that SD_Field_0506 has almost no loci shared with other samples, and SD_Field_1453 has only about half as many loci as most samples. We’ll want to remove these samples before moving on. Note that SD_Field_0506 is an obviously failed sample, but for SD_Field_1453, you would likely want to try out some preliminary downstream analyses with and without this sample – I’ve already played with these data and decided it’s best to remove it.
 
+<br>
+<br>
 
 ## Branch to remove low data samples
 

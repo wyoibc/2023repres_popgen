@@ -12,7 +12,7 @@ July 27, 2023
 - [Overview](#Overview)
 - [RStudio on Beartooth](#RStudio-on-Beartooth)
 - [File and path setup](#File-and-path-setup)
-- [Basic stats](#Basic stats)
+- [Basic stats](#Basic-stats)
 - [Principal components analysis](#Principal-components-analysis)
 - [Population structure using sNMF](#Population-structure-using-sNMF)
 - [Plot population clusters to a map](#Plot-population-clusters-to-a-map)
@@ -160,7 +160,7 @@ data_dir <- "~/inbreh/2023_popgen_wkshp/ipyrad_out/ruber_reduced_denovo_outfiles
 ## make a directory to put the output plots into
 ##    this can be wherever you like, I'm putting it into the directory that contains
 ##    my scripts and ipyrad output directories
-out_dir<-"~/inbreh/2023_popgen_wkshp/pop_struct_out"
+out_dir <- "~/inbreh/2023_popgen_wkshp/pop_struct_out"
 if(!dir.exists(out_dir)){ # check if the directory  exists and return TRUE if it does not
   dir.create(out_dir)   # create the directory if it does not exist
 }
@@ -173,7 +173,7 @@ if(!dir.exists(out_dir)){ # check if the directory  exists and return TRUE if it
 basefile <- "ruber_reduced_denovo"
 
 # Read in the geographic coordinates for plotting later
-coords<-read.csv(paste0(data_dir,"/Localities.csv"), header=TRUE, row.names=NULL)
+coords <- read.csv(paste0(data_dir,"/Localities.csv"), header=TRUE, row.names=NULL)
 
 
 
@@ -181,12 +181,12 @@ coords<-read.csv(paste0(data_dir,"/Localities.csv"), header=TRUE, row.names=NULL
 ####################################################################################
 ## Set up paths to input files using the base file name specified above
 ####################################################################################
-path_ugeno<-paste0(data_dir,"/", basefile,".ugeno")
-path_ustr<-paste0(data_dir,"/", basefile,".ustr")
-path_vcf<-paste0(data_dir,"/", basefile,".vcf")
+path_ugeno <- paste0(data_dir,"/", basefile,".ugeno")
+path_ustr <- paste0(data_dir,"/", basefile,".ustr")
+path_vcf <- paste0(data_dir,"/", basefile,".vcf")
 
 ### Set up some colors for plotting farther down
-colors_2<-c("red", "blue") # colors for plotting 2 populations
+colors_2 <- c("red", "blue") # colors for plotting 2 populations
 
 
 # Set the working directory to the output directory
@@ -207,8 +207,8 @@ Let's start by reading in the data and calculating some very basic population ge
 Read in the dat a from the vcf file:
 
 ```r
-gendata_all<-read.vcfR(path_vcf) # read in all of the genetic data from the vcf file
-gendata<-vcfR2genind(gendata_all) # convert to genind format
+gendata_all <- read.vcfR(path_vcf) # read in all of the genetic data from the vcf file
+gendata <- vcfR2genind(gendata_all) # convert to genind format
 ```
 
 
@@ -239,6 +239,8 @@ mean(genstats$Hexp)
 
 Yep, we have low observed heterozygosity compared to expected. One likely reason for this is if there is population structure in the data. We'll test for this shortly.
 
+<br>
+<br>
 
 ## Principal components analysis
 
@@ -264,11 +266,16 @@ pca_res <- dudi.pca(df = genfreq, center = TRUE, scale = FALSE, scannf = FALSE, 
 
 Make a simple plot:
 
-```
+```r
 plot(pca_res$li, pch = 19, cex = 2, col = "blue")
 ```
 
 Looks like we probably have 2 distinct populations with some admixed individuals in between them. Next, we'll run a population clustering method to test this.
+
+
+
+
+
 
 
 <br>
@@ -359,6 +366,9 @@ admix<-as.data.frame(qmatrix)
 
 This will let us plot out these proportions to a map, which we'll do next with a little additional setup.
 
+<br>
+<br>
+
 
 ## Plot population clusters to a map
 
@@ -377,7 +387,7 @@ for_pies <- cbind(snmf_coords, admix)
 
 Get out the mapping data for USA states and for Mexico and then combine them together
 
-```
+```r
 states <- map_data("state") # US states data
 mex <- map_data("worldHires", "Mexico") # Mexico data
 mex$group <- mex$group + max(states$group) # have to do this to get rid of weird lines that show up otherwise because of groups in Mexico already being group numbers in states
@@ -477,7 +487,7 @@ If we had only pure IBD, we would expect a single, roughly linear cloud of point
 </center>
 
 
-These plots can help reassure us that there is IBD in the data, but some kind of discrete structure across the whole species, which is what we are detecting with DAPC, etc., but no further discrete structure within the northern population. 
+These plots can help reassure us that there is IBD in the data, but some kind of discrete structure across the whole species, which is what we are detecting with sNMF, etc., but no further discrete structure within the northern population. 
 
 
 

@@ -38,6 +38,8 @@ iPyRad is capable of generating datasets either by mapping your raw reads to a r
 
 If you need help with ipyrad outside of this workshop for specific issues, you can always post [here](https://app.gitter.im/#/room/#dereneaton_ipyrad:gitter.im). Isaac is very responsive to queries.
 
+* ipyrad is what I have always used to assemble my RADseq data, but it is certainly not the only option. [Stacks](https://catchenlab.life.illinois.edu/stacks/) is another popular option, or there are various ways to manually assemble or map RADseq data.
+
 
 <br>
 <br>

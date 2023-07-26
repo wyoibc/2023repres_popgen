@@ -19,7 +19,7 @@ This workshop will meet from 1-4 pm on the following dates in July 2023. Click o
 - 18th: [Intro to Beartooth (UW's computing cluster)](https://github.com/wyoibc/2023repres_popgen/blob/master/Intro_beartooth.md)
 - 20th: [Intro to Git & Github for reproducible research](https://github.com/wyoibc/2023repres_popgen/blob/master/Intro_git.md)
 - 25th: [RADseq data processing & assembly (using ipyrad)](https://github.com/wyoibc/2023repres_popgen/blob/master/RADseq_processing.md)
-- 27th: Population structure, R programming
+- 27th: [Population structure & RStudio on Beartooth](https://github.com/wyoibc/2023repres_popgen/blob/master/Pop_struct_R.md)
 
 ### We will meet in the Science Initiative Building (SIB) room 3001
 

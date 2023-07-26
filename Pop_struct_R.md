@@ -576,7 +576,7 @@ ggplot(pca_q, aes(x = Axis1, y = Axis2)) +
 This gives us a better idea of how much admixture there is in each sample. We could do more tweaking to make this look better, but we'll stop here.
 
 
-If we had more than just two populations, we wouldn't have a single gradient to color samples by. In that, maybe you'd want to plot pies of admixture proportions on the PCA. Here is how you could do that, using similar code to when plotting pies on a map:
+If we had more than just two populations, we wouldn't have a single gradient to color samples by. In that case, maybe you'd want to plot pies of admixture proportions on the PCA. Here is how you could do that, using similar code to when plotting pies on a map:
 
 ```r
 pdf(file="PCA_pies.pdf", width = 7, height = 5)

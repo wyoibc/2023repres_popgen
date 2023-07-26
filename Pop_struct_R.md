@@ -17,6 +17,7 @@ July 27, 2023
 - [Population structure using sNMF](#Population-structure-using-sNMF)
 - [Plot population clusters to a map](#Plot-population-clusters-to-a-map)
 - [Isolation by distance](#Isolation-by-distance)
+- [Grouped PCA](#Grouped-PCA)
 
 
 
@@ -270,6 +271,11 @@ Make a simple plot:
 plot(pca_res$li, pch = 19, cex = 2, col = "blue")
 ```
 
+
+<center>
+<img src="images/PCA.png" width=50% />
+</center>
+
 Looks like we probably have 2 distinct populations with some admixed individuals in between them. Next, we'll run a population clustering method to test this.
 
 
@@ -488,6 +494,110 @@ If we had only pure IBD, we would expect a single, roughly linear cloud of point
 
 
 These plots can help reassure us that there is IBD in the data, but some kind of discrete structure across the whole species, which is what we are detecting with sNMF, etc., but no further discrete structure within the northern population. 
+
+
+<br>
+<br>
+
+
+## Grouped PCA
+
+If there is time, we can explore how to color the points of the PCA we ran earlier by the populations clusters identified by sNMF.
+
+
+We'll use the `qmatrix` that we extracted from the sNMF output (contains the proportions of ancestry from each cluster). We can iterate over the rows of this to find out which cluster each sample has the maximum membership in:
+
+```r
+cluster <- apply(qmatrix, 1, which.max)
+```
+
+Then we can use this to create a vector of colors for each point when we plot the PCA:
+
+```r
+PCA_cols <- cluster
+PCA_cols[PCA_cols == 1] <- "red"
+PCA_cols[PCA_cols == 2] <- "yellow"
+```
+
+Plot it out, setting these as the background (`bg`) colors for outlined circle points:
+
+```r
+plot(pca_res$li, pch = 21, cex = 2, bg = PCA_cols)
+```
+
+<center>
+<img src="images/PCA2.png" width=50% />
+</center>
+
+Cool, looks like this corresponds to our two populations.
+
+
+What if we want to check if three in the middle are the ones identified as highly admixed by sNMF? We can use an `apply` statement with a simple anonymous function to find the rows of the Q matrix for individuals that do not have more than 0.7 of their ancestry from any single cluster:
+
+```r
+high_admix <- apply(qmatrix, 1, function(x) max(x) < 0.7)
+```
+
+and then use this to index the `PCA_cols` object and swap out the colors of these individuals for `orange`, then re-plot:
+
+
+```r
+PCA_cols[high_admix] <- "orange"
+plot(pca_res$li, pch = 21, cex = 2, bg = PCA_cols)
+```
+
+<center>
+<img src="images/PCA3.png" width=50% />
+</center>
+
+
+Looks like the admixed individuals are the intermediate ones, that's cool.
+
+
+Since we only have two population clusters, we could also use ggplot and color points along a gradient depending on the value of ancestry in cluster 1. To do this, we'll make a single dataframe that has the PCA coordinates and the qmatrix values in it:
+
+```r
+pca_q <- cbind(pca_res$li, qmatrix)
+```
+
+Then use ggplot to make a scatterplot colored along a gradient:
+
+```r
+ggplot(pca_q, aes(x = Axis1, y = Axis2)) +
+  geom_point(aes(fill = V1), size = 6, shape = 21, color = "black") +
+  scale_fill_gradient(low = "yellow", high = "red")
+```
+
+
+<center>
+<img src="images/PCA4.png" width=50% />
+</center>
+
+This gives us a better idea of how much admixture there is in each sample. We could do more tweaking to make this look better, but we'll stop here.
+
+
+If we had more than just two populations, we wouldn't have a single gradient to color samples by. In that, maybe you'd want to plot pies of admixture proportions on the PCA. Here is how you could do that, using similar code to when plotting pies on a map:
+
+```r
+pdf(file="PCA_pies.pdf", width = 7, height = 5)
+ggplot() +
+  geom_scatterpie(data = pca_q, aes(x = Axis1, y = Axis2, r = 0.35), cols = grep("^V", colnames(pca_q), value = TRUE), size = 0.1) +
+  scale_fill_manual(values = colors_2) # fill with the colors we defines above
+dev.off()  
+
+```
+
+
+<center>
+<img src="images/PCA5.png" width=50% />
+</center>
+
+
+
+
+Again, we could alter the theme, legend, etc. to make this nicer.
+
+
 
 
 

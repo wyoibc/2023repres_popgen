@@ -282,6 +282,23 @@ Note that you can clone any public Github repository if you like, and if the Git
 <br>
 <br>
 
+
+## Ignoring files
+
+Often, there will be some files that you don't want to track that live in your git repository directory. These can be things like checkpoint files that some programs generate, error and out files created by slurm scripts, etc. To ignore files and directories, all you have to do is create a `.gitignore` file and list files or directories as individual lines in the `.gitignore`. Note that `.gitignore` starts with a `.`, indicating that it is a hidden file. You won't see this using regular `ls` or similar, and will have to explicitly list out all files, including hidden files: `ls -a`.
+
+Here is an example of the contents of one of my `.gitignore` files. Note that `#` denotes a comment line.
+
+```
+# ignore error and out files
+errs_outs/
+Arizona_mapping/mapping/bwa_errs_outs
+```
+
+<br>
+<br>
+
+
 ## Reverting to a previous version
 
 As was stated at the start, git is a "version control" program and one of the things it lets you do is go back to old versions of a file, e.g., a previous version before you accidentally broke some code.

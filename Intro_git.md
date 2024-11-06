@@ -19,6 +19,7 @@ July 20, 2023
 	- [New command line repo](#New-command-line-repo)
 - [Tracking, pushing, pulling](#Tracking-pushing-pulling)
 - [Reverting to a previous version](#Reverting-to-a-previous-version)
+- [Ignoring files](#Ignoring-files)
 - [Collaborating on Github](#Collaborating-on-Github)
 
 
